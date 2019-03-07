@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RoomReservation.Data.Models
 {
     public class Resident
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [MinLength(9)]
+        [MaxLength(9)]
         public string Id { get; set; }
 
         [Required]
@@ -30,9 +33,9 @@ namespace RoomReservation.Data.Models
 
         [Required]
         [Range(0, 200)]
-        public int CreditHours { get; set; }
+        public byte CreditHours { get; set; }
 
-        public int RoomId { get; set; }
+        public ushort RoomId { get; set; }
 
         public Room Room { get; set; }
     }

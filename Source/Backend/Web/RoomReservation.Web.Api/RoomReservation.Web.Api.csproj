@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\RoomReservation.Data\RoomReservation.Data.csproj" />
+    <ProjectReference Include="..\RoomReservation.Web.DataTransferModels\RoomReservation.Web.DataTransferModels.csproj" />
+    <ProjectReference Include="..\..\Data\RoomReservation.Data.Models\RoomReservation.Data.Models.csproj" />
   </ItemGroup>
 
 </Project>

@@ -15,18 +15,6 @@ namespace RoomReservation.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<Resident>(resident =>
-            {
-                resident.Property(r => r.Id)
-                    .ValueGeneratedNever();
-            });
-
-            builder.Entity<Room>(room =>
-            {
-                room.Property(r => r.Id)
-                    .ValueGeneratedNever();
-            });
         }
     }
 }

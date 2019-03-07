@@ -10,30 +10,30 @@ namespace RoomReservation.Data.Migrations
                 name: "Rooms",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
+                    Number = table.Column<int>(nullable: false),
                     IsRA = table.Column<bool>(nullable: false),
                     IsSingle = table.Column<bool>(nullable: false),
                     IsMale = table.Column<bool>(nullable: false),
                     IsAvailable = table.Column<bool>(nullable: false),
-                    NumberOfResidents = table.Column<byte>(nullable: false)
+                    CurrentResidentsCount = table.Column<byte>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.PrimaryKey("PK_Rooms", x => x.Number);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Residents",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<string>(maxLength: 9, nullable: false),
                     FirstName = table.Column<string>(maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(maxLength: 50, nullable: true),
                     LastName = table.Column<string>(maxLength: 50, nullable: false),
                     IsMale = table.Column<bool>(nullable: false),
                     IsRA = table.Column<bool>(nullable: false),
                     Email = table.Column<string>(maxLength: 50, nullable: false),
-                    CreditHours = table.Column<int>(nullable: false),
+                    CreditHours = table.Column<byte>(nullable: false),
                     RoomId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -43,7 +43,7 @@ namespace RoomReservation.Data.Migrations
                         name: "FK_Residents_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Rooms",
-                        principalColumn: "Id",
+                        principalColumn: "Number",
                         onDelete: ReferentialAction.Cascade);
                 });
 

@@ -20,9 +20,10 @@ namespace RoomReservation.Data.Migrations
 
             modelBuilder.Entity("RoomReservation.Data.Models.Resident", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .HasMaxLength(9);
 
-                    b.Property<int>("CreditHours");
+                    b.Property<byte>("CreditHours");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -54,7 +55,9 @@ namespace RoomReservation.Data.Migrations
 
             modelBuilder.Entity("RoomReservation.Data.Models.Room", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Number");
+
+                    b.Property<byte>("CurrentResidentsCount");
 
                     b.Property<bool>("IsAvailable");
 
@@ -64,9 +67,7 @@ namespace RoomReservation.Data.Migrations
 
                     b.Property<bool>("IsSingle");
 
-                    b.Property<byte>("NumberOfResidents");
-
-                    b.HasKey("Id");
+                    b.HasKey("Number");
 
                     b.ToTable("Rooms");
                 });
