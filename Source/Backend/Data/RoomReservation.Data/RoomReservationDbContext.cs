@@ -5,6 +5,9 @@ namespace RoomReservation.Data
 {
     public class RoomReservationDbContext : DbContext
     {
+        public RoomReservationDbContext(DbContextOptions<RoomReservationDbContext> options) : base(options)
+        { }
+
         public DbSet<Resident> Residents { get; set; }
 
         public DbSet<Room> Rooms { get; set; }
