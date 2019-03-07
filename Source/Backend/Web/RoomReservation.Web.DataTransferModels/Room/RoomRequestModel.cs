@@ -1,8 +1,10 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace RoomReservation.Web.DataTransferModels.Room
 {
-    public class RoomRequestModel
+    using System.ComponentModel.DataAnnotations;
+    using RoomReservation.Common.AutoMapper;
+    using RoomReservation.Data.Models;
+
+    public class RoomRequestModel : IMapFrom<Room>
     {
         [Required]
         [Range(1000, 9999)]

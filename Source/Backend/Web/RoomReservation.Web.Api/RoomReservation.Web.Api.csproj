@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
   </ItemGroup>
@@ -14,6 +15,7 @@
     <ProjectReference Include="..\..\Data\RoomReservation.Data\RoomReservation.Data.csproj" />
     <ProjectReference Include="..\RoomReservation.Web.DataTransferModels\RoomReservation.Web.DataTransferModels.csproj" />
     <ProjectReference Include="..\..\Data\RoomReservation.Data.Models\RoomReservation.Data.Models.csproj" />
+    <ProjectReference Include="..\..\RoomReservation.Common\RoomReservation.Common.csproj" />
   </ItemGroup>
 
 </Project>

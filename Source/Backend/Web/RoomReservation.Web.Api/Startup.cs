@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
+using RoomReservation.Common.AutoMapper;
 using RoomReservation.Data;
 
 namespace RoomReservation.Web.Api
@@ -35,6 +37,16 @@ namespace RoomReservation.Web.Api
                     .UseSqlServer(Configuration.GetConnectionString("RoomReservationDatabase"))
                     .ConfigureWarnings(warning => warning.Throw(RelationalEventId.QueryClientEvaluationWarning))
             );
+
+            // Configure AutoMapper
+            var mappingConfig = new MapperConfiguration(config =>
+            {
+                config.AddProfile(new MappingProfile());
+            });
+
+            // Configure DI for AutoMapper
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             // TODO: Add restriction to the CORS policy when in production
             // Configure Cors

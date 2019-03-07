@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\RoomReservation.Common\RoomReservation.Common.csproj" />
+    <ProjectReference Include="..\..\Data\RoomReservation.Data.Models\RoomReservation.Data.Models.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>

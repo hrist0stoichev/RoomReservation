@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RoomReservation.Data;
@@ -9,12 +11,14 @@ namespace RoomReservation.Web.Api.Controllers
 {
     public class RoomsController : BaseController
     {
-        public RoomsController(RoomReservationDbContext context) : base(context)
+        public RoomsController(RoomReservationDbContext context, IMapper mapper) : base(context, mapper)
         { }
 
         public async Task<IActionResult> Get()
         {
-            var rooms = await this.Context.Rooms.ToListAsync();
+            var rooms = await this.Context.Rooms
+                .ProjectTo<ListedRoomResponseModel>()
+                .ToListAsync();
 
             return Ok(rooms);
         }
@@ -22,15 +26,7 @@ namespace RoomReservation.Web.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRoom(RoomRequestModel model)
         {
-            var roomToCreate = new Room
-            {
-                Number = (ushort)model.Number,
-                IsRA = (bool)model.IsRA,
-                IsMale = (bool)model.IsMale,
-                IsSingle = (bool)model.IsSingle,
-                IsAvailable = (bool)model.IsAvailable,
-                CurrentResidentsCount = (byte)model.CurrentResidentsCount
-            };
+            var roomToCreate = this.Mapper.Map<Room>(model);
 
             await this.Context.Rooms.AddAsync(roomToCreate);
             await this.Context.SaveChangesAsync();
