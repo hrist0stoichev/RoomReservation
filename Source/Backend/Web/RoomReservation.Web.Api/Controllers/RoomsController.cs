@@ -23,6 +23,15 @@ namespace RoomReservation.Web.Api.Controllers
             return Ok(rooms);
         }
 
+        [HttpGet("{number}")]
+        public async Task<IActionResult> Get(int number)
+        {
+            var room = await this.Context.Rooms
+                .SingleOrDefaultAsync(r => r.Number == number);
+
+            return this.Ok(this.Mapper.Map<ListedRoomResponseModel>(room));
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddRoom(RoomRequestModel model)
         {

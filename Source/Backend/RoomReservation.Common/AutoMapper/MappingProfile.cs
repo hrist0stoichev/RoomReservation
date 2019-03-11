@@ -14,7 +14,7 @@ namespace RoomReservation.Common.AutoMapper
             var types = dataTransferModelsAssemblie.GetExportedTypes();
 
             LoadStandardMappings(types);
-            Mapper.Initialize(cfg => LoadCustomMappings(types, cfg));
+            LoadCustomMappings(types);
         }
 
         private void LoadStandardMappings(IEnumerable<Type> types)
@@ -35,7 +35,7 @@ namespace RoomReservation.Common.AutoMapper
             }
         }
 
-        private void LoadCustomMappings(IEnumerable<Type> types, IMapperConfigurationExpression cfg)
+        private void LoadCustomMappings(IEnumerable<Type> types)
         {
             var maps = types.SelectMany(t => t.GetInterfaces(), (t, i) => new { t, i })
                 .Where(
@@ -47,7 +47,7 @@ namespace RoomReservation.Common.AutoMapper
 
             foreach (var map in maps)
             {
-                map.CreateMappings(cfg);
+                map.CreateMappings(this);
             }
         }
     }

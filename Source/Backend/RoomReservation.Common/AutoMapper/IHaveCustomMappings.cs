@@ -4,6 +4,6 @@ namespace RoomReservation.Common.AutoMapper
 {
     public interface IHaveCustomMappings
     {
-        void CreateMappings(IMapperConfigurationExpression configuration);
+        void CreateMappings(Profile configuration);
     }
 }
