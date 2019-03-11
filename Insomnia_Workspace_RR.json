@@ -1,0 +1,121 @@
+{
+	"_type": "export",
+	"__export_format": 3,
+	"__export_date": "2019-03-09T21:48:57.207Z",
+	"__export_source": "insomnia.desktop.app:v5.16.6",
+	"resources": [
+		{
+			"_id": "wrk_9b0c589da950490eb79b47ca85131ccb",
+			"created": 1552162801854,
+			"description": "Independent Study",
+			"modified": 1552163492970,
+			"name": "RoomReservation",
+			"parentId": null,
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_1ae5893e3dc140b4bb3028726280ea4a",
+			"color": null,
+			"created": 1552162801867,
+			"data": {},
+			"isPrivate": false,
+			"modified": 1552164435324,
+			"name": "New Environment",
+			"parentId": "wrk_9b0c589da950490eb79b47ca85131ccb",
+			"_type": "environment"
+		},
+		{
+			"_id": "jar_63ebece9b1184e4e9c06e3649c36c22a",
+			"cookies": [],
+			"created": 1552162801873,
+			"modified": 1552162801873,
+			"name": "Default Jar",
+			"parentId": "wrk_9b0c589da950490eb79b47ca85131ccb",
+			"_type": "cookie_jar"
+		},
+		{
+			"_id": "fld_75bbc1a304d0413ca40813cf8427825c",
+			"created": 1552163659888,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1552163659889,
+			"modified": 1552163659888,
+			"name": "CRUD",
+			"parentId": "wrk_9b0c589da950490eb79b47ca85131ccb",
+			"_type": "request_group"
+		},
+		{
+			"_id": "env_46f4f14f12cd4a7ead4866528be35ea3",
+			"color": "#00c900",
+			"created": 1552164437533,
+			"data": {
+				"api": "/api",
+				"base_url": "https://localhost:5001"
+			},
+			"isPrivate": false,
+			"modified": 1552164589757,
+			"name": "dev",
+			"parentId": "env_1ae5893e3dc140b4bb3028726280ea4a",
+			"_type": "environment"
+		},
+		{
+			"_id": "req_eb07d4e116494f22a3babbf5bdadac15",
+			"authentication": {},
+			"body": {},
+			"created": 1552163675503,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_03b646afc5764c35b89b44ab33e9dcab",
+					"name": "",
+					"value": ""
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1552163675503,
+			"method": "GET",
+			"modified": 1552164613657,
+			"name": "Get All Rooms",
+			"parameters": [],
+			"parentId": "fld_75bbc1a304d0413ca40813cf8427825c",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}{{ api  }}/rooms/",
+			"_type": "request"
+		},
+		{
+			"_id": "req_a2d4b502fa44460fa82d23acee1302dd",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"Number\": 2345,\n\t\"IsRA\": true,\n\t\"IsAvailable\": true,\n\t\"IsMale\": false,\n\t\"IsSingle\": true,\n\t\"CurrentResidentsCount\": 0\n}"
+			},
+			"created": 1552163788409,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_1791396e12e44290890724e515108024",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1552163675553,
+			"method": "POST",
+			"modified": 1552167507681,
+			"name": "Add Room",
+			"parameters": [],
+			"parentId": "fld_75bbc1a304d0413ca40813cf8427825c",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}{{ api  }}/rooms/",
+			"_type": "request"
+		}
+	]
+}
