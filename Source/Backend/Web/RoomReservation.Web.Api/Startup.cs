@@ -39,14 +39,7 @@ namespace RoomReservation.Web.Api
             );
 
             // Configure AutoMapper
-            var mappingConfig = new MapperConfiguration(config =>
-            {
-                config.AddProfile(new MappingProfile());
-            });
-
-            // Configure DI for AutoMapper
-            IMapper mapper = mappingConfig.CreateMapper();
-            services.AddSingleton(mapper);
+            Mapper.Initialize(cfg => cfg.AddProfile<MappingProfile>());
 
             // TODO: Add restriction to the CORS policy when in production
             // Configure Cors

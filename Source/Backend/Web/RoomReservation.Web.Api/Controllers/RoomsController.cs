@@ -11,7 +11,7 @@ namespace RoomReservation.Web.Api.Controllers
 {
     public class RoomsController : BaseController
     {
-        public RoomsController(RoomReservationDbContext context, IMapper mapper) : base(context, mapper)
+        public RoomsController(RoomReservationDbContext context) : base(context)
         { }
 
         public async Task<IActionResult> Get()
@@ -29,13 +29,13 @@ namespace RoomReservation.Web.Api.Controllers
             var room = await this.Context.Rooms
                 .SingleOrDefaultAsync(r => r.Number == number);
 
-            return this.Ok(this.Mapper.Map<ListedRoomResponseModel>(room));
+            return this.Ok(Mapper.Map<ListedRoomResponseModel>(room));
         }
 
         [HttpPost]
         public async Task<IActionResult> AddRoom(RoomRequestModel model)
         {
-            var roomToCreate = this.Mapper.Map<Room>(model);
+            var roomToCreate = Mapper.Map<Room>(model);
 
             await this.Context.Rooms.AddAsync(roomToCreate);
             await this.Context.SaveChangesAsync();

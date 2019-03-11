@@ -8,14 +8,11 @@ namespace RoomReservation.Web.Api.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-        protected BaseController(RoomReservationDbContext context, IMapper mapper)
+        protected BaseController(RoomReservationDbContext context)
         {
             this.Context = context;
-            this.Mapper = mapper;
         }
 
         protected RoomReservationDbContext Context { get; }
-
-        protected IMapper Mapper { get; }
     }
 }
