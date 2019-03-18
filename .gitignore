@@ -300,6 +300,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Front-End Dependencies
+build/
+npm-debug.log*
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
