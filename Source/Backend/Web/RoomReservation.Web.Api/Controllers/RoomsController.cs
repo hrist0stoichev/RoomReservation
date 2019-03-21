@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RoomReservation.Data;
@@ -14,6 +16,7 @@ namespace RoomReservation.Web.Api.Controllers
         public RoomsController(RoomReservationDbContext context) : base(context)
         { }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var rooms = await this.Context.Rooms
@@ -24,6 +27,7 @@ namespace RoomReservation.Web.Api.Controllers
         }
 
         [HttpGet("{number}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(int number)
         {
             var room = await this.Context.Rooms
@@ -33,6 +37,7 @@ namespace RoomReservation.Web.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddRoom(RoomRequestModel model)
         {
             var roomToCreate = Mapper.Map<Room>(model);
