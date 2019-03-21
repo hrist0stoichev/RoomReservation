@@ -11,21 +11,27 @@ namespace RoomReservation.Data.Models
         public ushort Number { get; set; }
 
         [Required]
-        public bool IsRA { get; set; }
+        [Range(1, 4)]
+        public byte Capacity { get; set; }
 
         [Required]
-        public bool IsSingle { get; set; }
+        public bool IsRA { get; set; }
 
         [Required]
         public bool IsMale { get; set; }
 
         [Required]
-        public bool IsAvailable { get; set; }
+        public bool IsReserved { get; set; }
 
-        [Required]
-        [Range(0, 2)]
-        public byte CurrentResidentsCount { get; set; }
+        [MaxLength(500)]
+        public string Comments { get; set; }
 
-        public List<Resident> Residents { get; set; }
+        public ushort? ApartmentRoomNumber { get; set; }
+
+        public Room ApartmentRoom { get; set; }
+
+        public List<Student> Students { get; set; }
+
+        public List<Invitation> Invitations { get; set; }
     }
 }

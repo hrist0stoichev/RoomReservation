@@ -1,9 +1,10 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RoomReservation.Data.Models
 {
-    public class Resident
+    public class Student
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         [MinLength(9)]
@@ -21,6 +22,16 @@ namespace RoomReservation.Data.Models
         [MaxLength(50)]
         public string LastName { get; set; }
 
+        public DateTime RegistrationTime { get; set; }
+
+        [Required]
+        [Range(0, 200)]
+        public byte CreditHours { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string Email { get; set; }
+
         [Required]
         public bool IsMale { get; set; }
 
@@ -28,15 +39,22 @@ namespace RoomReservation.Data.Models
         public bool IsRA { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        public string Email { get; set; }
+        public bool IsRoomConfirmed { get; set; }
 
         [Required]
-        [Range(0, 200)]
-        public byte CreditHours { get; set; }
+        public bool IsBanned { get; set; }
 
-        public ushort RoomId { get; set; }
+        [Required]
+        public bool IsOnCampus { get; set; }
 
-        public Room Room { get; set; }
+        [Required]
+        public bool IsDepositPaid { get; set; }
+
+        [MaxLength(500)]
+        public string Comments { get; set; }
+
+        public ushort? CurrentRoomNumber { get; set; }
+
+        public Room CurrentRoom { get; set; }
     }
 }
