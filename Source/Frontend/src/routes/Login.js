@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { Container, Row, Col, Card, CardBody, Alert } from 'reactstrap';
 import LoginForm from '../components/Login/LoginForm';
 import Loader from '../components/Loader';
@@ -21,12 +22,21 @@ const renderLoader = (props) => {
   }
 }
 
+const renderIsAuthenticated = (props) => {
+  if (props.isAuthenticated) {
+    return <Redirect to='/main' />;
+  }
+  return '';
+}
+
 const Login = (props) => (
   <div id="login">
     <Container>
       <Row className="vh-100">
         <Col md={{ size: 10, offset: 1 }} className="my-auto position-relative">
+        {console.log(props)}
           { renderError(props) }
+          { renderIsAuthenticated(props) }
           <Card className="p-2">
             <CardBody>
               <Row>

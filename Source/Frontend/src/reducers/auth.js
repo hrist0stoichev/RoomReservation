@@ -6,6 +6,9 @@ const initialState = {
   isFailed: false,
   error: '',
   username: '',
+  accessToken: '',
+  userRole: '',
+  phase: '',
 };
 
 const auth = (state = initialState, action) => {
@@ -26,7 +29,10 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         isAuthenticated: true,
-        username: action.user.username,
+        username: action.user.userName,
+        accessToken: action.user.access_token,
+        userRole: action.user.userRole,
+        phase: action.user.phase
       };
     case LOGOUT:
       return initialState;

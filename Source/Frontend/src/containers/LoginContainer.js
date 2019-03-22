@@ -8,6 +8,9 @@ const mapStateToProps = state => ({
   isFailed: state.auth.isFailed,
   username: state.auth.username,
   error: state.auth.error,
+  accessToken: state.auth.accessToken,
+  userRole: state.auth.userRole,
+  phase: state.auth.phase
 });
 
 const mapDispatchToProps = dispatch => ({
