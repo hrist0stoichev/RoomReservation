@@ -24,17 +24,17 @@ const renderLoader = (props) => {
 const Login = (props) => (
   <div id="login">
     <Container>
-      <Row style={{ height: '100vh' }}>
-        <Col md={{ size: 10, offset: 1 }} className="my-auto" style={{ position: 'relative' }}>
+      <Row className="vh-100">
+        <Col md={{ size: 10, offset: 1 }} className="my-auto position-relative">
           { renderError(props) }
           <Card className="p-2">
             <CardBody>
               <Row>
-                <Col>
+                <Col className="pr-5 border-right">
                   <LoginForm login={props.login} />
                   { renderLoader(props) }
                 </Col>
-                <Col>
+                <Col className="pl-5">
                   <h6 className="mb-3">Login instructions</h6>
                   <p>Please, enter your Username and Password and click the Login button below.</p>
                   <Row>
