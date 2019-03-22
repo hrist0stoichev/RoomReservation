@@ -10,8 +10,8 @@ using RoomReservation.Data;
 namespace RoomReservation.Data.Migrations
 {
     [DbContext(typeof(RoomReservationDbContext))]
-    [Migration("20190321170120_2")]
-    partial class _2
+    [Migration("20190321235400_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,15 +27,11 @@ namespace RoomReservation.Data.Migrations
 
                     b.Property<string>("FromStudentId");
 
-                    b.Property<string>("FromStudentId1");
+                    b.Property<string>("RoomNumber");
 
-                    b.Property<int>("RoomNumber");
+                    b.HasKey("ToStudentId", "FromStudentId", "RoomNumber");
 
-                    b.HasKey("ToStudentId", "FromStudentId");
-
-                    b.HasAlternateKey("FromStudentId", "ToStudentId");
-
-                    b.HasIndex("FromStudentId1");
+                    b.HasAlternateKey("FromStudentId", "RoomNumber", "ToStudentId");
 
                     b.HasIndex("RoomNumber");
 
@@ -44,9 +40,10 @@ namespace RoomReservation.Data.Migrations
 
             modelBuilder.Entity("RoomReservation.Data.Models.Room", b =>
                 {
-                    b.Property<int>("Number");
+                    b.Property<string>("Number")
+                        .HasMaxLength(4);
 
-                    b.Property<int?>("ApartmentRoomNumber");
+                    b.Property<string>("ApartmentRoomNumber");
 
                     b.Property<byte>("Capacity");
 
@@ -78,7 +75,7 @@ namespace RoomReservation.Data.Migrations
 
                     b.Property<byte>("CreditHours");
 
-                    b.Property<int?>("CurrentRoomNumber");
+                    b.Property<string>("CurrentRoomNumber");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -119,8 +116,9 @@ namespace RoomReservation.Data.Migrations
             modelBuilder.Entity("RoomReservation.Data.Models.Invitation", b =>
                 {
                     b.HasOne("RoomReservation.Data.Models.Student", "FromStudent")
-                        .WithMany()
-                        .HasForeignKey("FromStudentId1");
+                        .WithMany("InvitationsSent")
+                        .HasForeignKey("FromStudentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RoomReservation.Data.Models.Room", "Room")
                         .WithMany("Invitations")
@@ -128,9 +126,9 @@ namespace RoomReservation.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RoomReservation.Data.Models.Student", "ToStudent")
-                        .WithMany()
+                        .WithMany("InvitationsReceived")
                         .HasForeignKey("ToStudentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("RoomReservation.Data.Models.Room", b =>
@@ -144,7 +142,7 @@ namespace RoomReservation.Data.Migrations
             modelBuilder.Entity("RoomReservation.Data.Models.Student", b =>
                 {
                     b.HasOne("RoomReservation.Data.Models.Room", "CurrentRoom")
-                        .WithMany("Students")
+                        .WithMany("Residents")
                         .HasForeignKey("CurrentRoomNumber")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

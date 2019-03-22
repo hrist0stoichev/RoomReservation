@@ -7,8 +7,9 @@ namespace RoomReservation.Data.Models
     public class Room
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Range(1000, 9999)]
-        public ushort Number { get; set; }
+        [MinLength(4)]
+        [MaxLength(4)]
+        public string Number { get; set; }
 
         [Required]
         [Range(1, 4)]
@@ -17,8 +18,7 @@ namespace RoomReservation.Data.Models
         [Required]
         public bool IsRA { get; set; }
 
-        [Required]
-        public bool IsMale { get; set; }
+        public bool? IsMale { get; set; }
 
         [Required]
         public bool IsReserved { get; set; }
@@ -26,11 +26,11 @@ namespace RoomReservation.Data.Models
         [MaxLength(500)]
         public string Comments { get; set; }
 
-        public ushort? ApartmentRoomNumber { get; set; }
+        public string ApartmentRoomNumber { get; set; }
 
         public Room ApartmentRoom { get; set; }
 
-        public List<Student> Students { get; set; }
+        public List<Student> Residents { get; set; }
 
         public List<Invitation> Invitations { get; set; }
     }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RoomReservation.Data;
 
 namespace RoomReservation.Data.Migrations
 {
     [DbContext(typeof(RoomReservationDbContext))]
-    partial class RoomReservationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190322010130_2")]
+    partial class _2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,6 +94,8 @@ namespace RoomReservation.Data.Migrations
                     b.Property<bool>("IsOnCampus");
 
                     b.Property<bool>("IsRA");
+
+                    b.Property<bool>("IsRoomConfirmed");
 
                     b.Property<string>("LastName")
                         .IsRequired()

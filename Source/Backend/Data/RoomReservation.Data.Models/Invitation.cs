@@ -14,8 +14,8 @@ namespace RoomReservation.Data.Models
 
         public Student ToStudent { get; set; }
 
-        [Required]
-        public ushort RoomNumber { get; set; }
+        [Key]
+        public string RoomNumber { get; set; }
 
         public Room Room { get; set; }
     }

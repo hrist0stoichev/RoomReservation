@@ -8,22 +8,22 @@ namespace RoomReservation.Web.DataTransferModels.Room
     {
         [Required]
         [Range(1000, 9999)]
-        public ushort? Number { get; set; }
+        public string Number { get; set; }
+
+        [Required]
+        [Range(1, 4)]
+        public byte? Capacity { get; set; }
 
         [Required]
         public bool? IsRA { get; set; }
 
         [Required]
-        public bool? IsSingle { get; set; }
-
-        [Required]
         public bool? IsMale { get; set; }
 
         [Required]
-        public bool? IsAvailable { get; set; }
+        public bool? IsReserved { get; set; }
 
-        [Required]
-        [Range(0, 2)]
-        public byte? CurrentResidentsCount { get; set; }
+        [MaxLength(500)]
+        public string Comments { get; set; }
     }
 }

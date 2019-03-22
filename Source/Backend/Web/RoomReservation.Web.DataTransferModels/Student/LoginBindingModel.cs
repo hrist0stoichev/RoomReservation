@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RoomReservation.Web.DataTransferModels.User
+namespace RoomReservation.Web.DataTransferModels.Student
 {
     public class LoginBindingModel
     {

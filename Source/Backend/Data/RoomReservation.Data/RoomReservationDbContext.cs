@@ -21,7 +21,7 @@ namespace RoomReservation.Data
             builder.Entity<Student>(student =>
             {
                 student.HasOne(s => s.CurrentRoom)
-                    .WithMany(r => r.Students)
+                    .WithMany(r => r.Residents)
                     .HasForeignKey(s => s.CurrentRoomNumber)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
@@ -38,7 +38,19 @@ namespace RoomReservation.Data
 
             builder.Entity<Invitation>(invitation =>
             {
-                invitation.HasKey(i => new { i.ToStudentId, i.FromStudentId });
+                invitation.HasKey(i => new { i.ToStudentId, i.FromStudentId, i.RoomNumber });
+
+                invitation.HasOne(i => i.FromStudent)
+                    .WithMany(s => s.InvitationsSent)
+                    .HasForeignKey(i => i.FromStudentId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                invitation.HasOne(i => i.ToStudent)
+                    .WithMany(s => s.InvitationsReceived)
+                    .HasForeignKey(i => i.ToStudentId)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 invitation.HasOne(i => i.Room)
                     .WithMany(r => r.Invitations)

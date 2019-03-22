@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RoomReservation.Data;
-using RoomReservation.Web.DataTransferModels.User;
+using RoomReservation.Web.DataTransferModels.Student;
 
 namespace RoomReservation.Web.Api.Controllers
 {
@@ -20,7 +20,7 @@ namespace RoomReservation.Web.Api.Controllers
             this.Config = config;
         }
 
-        private IConfiguration Config { get; set; }
+        private IConfiguration Config { get; }
 
         [AllowAnonymous]
         [HttpPost("/api/token")]
@@ -61,7 +61,8 @@ namespace RoomReservation.Web.Api.Controllers
         {
             return new List<Claim>() 
             { 
-                new Claim(ClaimTypes.Role, userRole )
+                new Claim(ClaimTypes.Role, userRole),
+                new Claim(ClaimTypes.NameIdentifier, "100136822")
             };
         }
     }
