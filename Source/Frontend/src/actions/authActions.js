@@ -16,7 +16,7 @@ export const login = (user) => {
       .then(res => res.json())
       .then(res => {
         dispatch(loginLoading(false));
-          dispatch(loginSuccess(res));
+        dispatch(loginSuccess(res));
       })
       .catch(error => {
         dispatch(loginLoading(false));
