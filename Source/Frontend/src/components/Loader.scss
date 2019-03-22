@@ -1,0 +1,36 @@
+
+.loader {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.55);
+}
+
+.loader:after {
+  content: " ";
+  display: block;
+  width: 46px;
+  height: 46px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -23px;
+  margin-top: -23px;
+  border-radius: 50%;
+  border: 5px solid #333;
+  border-color: #333 transparent #333 transparent;
+  -webkit-animation: loader 1.2s linear infinite;
+  animation: loader 1.2s linear infinite;
+}
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
