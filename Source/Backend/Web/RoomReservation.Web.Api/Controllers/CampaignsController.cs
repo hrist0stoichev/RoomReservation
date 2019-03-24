@@ -26,7 +26,7 @@ namespace RoomReservation.Web.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("dates")]
         public IActionResult GetPhasesDates() {
 
             DateTime[] dates = new DateTime[] {
