@@ -3,6 +3,7 @@ import { CREATE_CAMPAIGN_LOADING, CREATE_CAMPAIGN_SUCCESS } from '../actions/act
 const initialState = {
   isLoading: false,
   isDone: false,
+  currentCampaign: null,
 };
 
 const campaign = (state = initialState, action) => {
@@ -16,6 +17,11 @@ const campaign = (state = initialState, action) => {
       return {
         ...state,
         isDone: true,
+      }
+    case GET_CAMPAIGN_DONE:
+      return {
+        ...state,
+        currentCampaign: action.campaign
       }
     default:
       return initialState;

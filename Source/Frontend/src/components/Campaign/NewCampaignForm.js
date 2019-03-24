@@ -111,7 +111,7 @@ class NewCampaignForm extends React.Component {
         </Row>
         <Row>
           <Col>
-            <Button className="mt-3" onClick={this.buttonHandler}>Start Campaign</Button>
+            <Button color="primary" className="mt-3" onClick={this.buttonHandler}>Start Campaign</Button>
           </Col>
         </Row>
       </div>
