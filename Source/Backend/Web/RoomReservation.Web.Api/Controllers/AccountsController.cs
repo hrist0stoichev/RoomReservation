@@ -42,13 +42,6 @@ namespace RoomReservation.Web.Api.Controllers
             return Ok(response);
         }
 
-        [Authorize]
-        [HttpGet]
-        public IActionResult GetPhase()
-        {   
-            return this.Ok(this.CurrentPhase);
-        }
-
         private string BuildToken(IEnumerable<Claim> claims)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Config["Jwt:Key"]));

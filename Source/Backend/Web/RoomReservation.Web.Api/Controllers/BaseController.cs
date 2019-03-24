@@ -1,9 +1,11 @@
 using System;
+using System.Globalization;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RoomReservation.Data;
 using RoomReservation.Data.Models;
 
@@ -16,7 +18,7 @@ namespace RoomReservation.Web.Api.Controllers
         private string _currentUserId;
 
         protected BaseController(RoomReservationDbContext context)
-        {
+        { 
             this.Context = context;
         }
 
@@ -43,14 +45,6 @@ namespace RoomReservation.Web.Api.Controllers
             private set
             {
                 this._currentUserId = value;
-            }
-        }
-
-        protected int CurrentPhase
-        {
-            get
-            {
-                return 0;
             }
         }
 
