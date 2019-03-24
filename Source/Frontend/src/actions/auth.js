@@ -1,4 +1,5 @@
-import { LOGIN_ERROR, LOGIN_LOADING, LOGIN_SUCCESS, LOGOUT } from './actionTypes';
+import { LOGIN_LOADING, LOGIN_SUCCESS, LOGOUT } from './actionTypes';
+import { showError } from './alert';
 import makeActionCreator from './makeActionCreator';
 import config from '../config.js';
 
@@ -20,12 +21,11 @@ export const login = (user) => {
       })
       .catch(error => {
         dispatch(loginLoading(false));
-        dispatch(loginError(error));
+        dispatch(showError(error.toString()));
       });
   }
 }
 
 export const loginLoading = makeActionCreator(LOGIN_LOADING, 'isLoading');
 export const loginSuccess = makeActionCreator(LOGIN_SUCCESS, 'user');
-export const loginError = makeActionCreator(LOGIN_ERROR, 'error');
 export const logout = makeActionCreator(LOGOUT);

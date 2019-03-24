@@ -1,12 +1,13 @@
 import reducer from '../../reducers/auth';
-import { loginLoading, loginSuccess, loginError, logout } from '../../actions/authActions';
+import { loginLoading, loginSuccess, loginError, logout } from '../../actions/auth';
 
 const initialState = {
   isLoading: false,
   isAuthenticated: false,
-  isFailed: false,
-  error: '',
+  accessToken: '',
   username: '',
+  phase: '',
+  userRole: '',
 };
 
 describe('authReducer', () => {
@@ -24,43 +25,28 @@ describe('authReducer', () => {
     const state = reducer(initialState, action);
 
     // Assert
-    expect(state).toEqual({
-      isLoading: true,
-      isAuthenticated: false,
-      isFailed: false,
-      error: '',
-      username: '',
-    });
+    expect(state.isLoading).toEqual(true);
   });
 
   it('should handle LOGIN_SUCCESS action', () => {
-    // Arrange & Act
-    const action = loginSuccess({ username: 'x' });
+    // Arrange
+    const user = {
+      userName: 'x',
+      access_token: 'y',
+      userRole: 'z',
+      phase: 'u',
+    };
+    const action = loginSuccess(user);
+    
+    // Act
     const state = reducer(initialState, action);
 
     // Assert
-    expect(state).toEqual({
-      isLoading: false,
-      isAuthenticated: true,
-      isFailed: false,
-      error: '',
-      username: 'x',
-    });
-  });
-
-  it('should handle LOGIN_ERROR action', () => {
-    // Arrange & Act
-    const action = loginError('x');
-    const state = reducer(initialState, action);
-
-    // Assert
-    expect(state).toEqual({
-      isLoading: false,
-      isAuthenticated: false,
-      isFailed: true,
-      error: 'x',
-      username: '',
-    });
+    expect(state.isAuthenticated).toEqual(true);
+    expect(state.username).toEqual('x');
+    expect(state.accessToken).toEqual('y');
+    expect(state.userRole).toEqual('z');
+    expect(state.phase).toEqual('u');
   });
 
   it('should handle LOGOUT action', () => {

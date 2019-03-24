@@ -1,8 +1,8 @@
 import React from 'react';
 
 const IsAuthenticated = (props) => {
-  if (props.IsAuthenticated) {
-    return this.props.children;
+  if (props.isAuthenticated) {
+    return <div>{props.children}</div>;
   } else {
     return '';
   }

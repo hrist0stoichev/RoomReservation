@@ -1,13 +1,12 @@
 import { connect } from 'react-redux';
 import Login from '../routes/Login';
-import { login, logout } from '../actions/authActions';
+import { login, logout } from '../actions/auth';
+import { showError } from '../actions/alert';
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   isLoading: state.auth.isLoading,
-  isFailed: state.auth.isFailed,
   username: state.auth.username,
-  error: state.auth.error,
   accessToken: state.auth.accessToken,
   userRole: state.auth.userRole,
   phase: state.auth.phase
@@ -20,6 +19,10 @@ const mapDispatchToProps = dispatch => ({
 
   logout() {
     dispatch(logout());
+  },
+
+  showError(message) {
+    dispatch(showError(message));
   }
 });
 

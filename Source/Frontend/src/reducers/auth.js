@@ -1,10 +1,8 @@
-import { LOGIN_ERROR, LOGIN_LOADING, LOGIN_SUCCESS, LOGOUT } from '../actions/actionTypes';
+import { LOGIN_LOADING, LOGIN_SUCCESS, LOGOUT } from '../actions/actionTypes';
 
 const initialState = {
   isLoading: false,
   isAuthenticated: false,
-  isFailed: false,
-  error: '',
   username: '',
   accessToken: '',
   userRole: '',
@@ -17,13 +15,6 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         isLoading: action.isLoading,
-        isFailed: false,
-      };
-    case LOGIN_ERROR:
-      return {
-        ...state,
-        isFailed: true,
-        error: action.error,
       };
     case LOGIN_SUCCESS:
       return {

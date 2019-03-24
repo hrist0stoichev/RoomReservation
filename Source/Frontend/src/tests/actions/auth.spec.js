@@ -1,4 +1,4 @@
-import { login, loginSuccess, loginLoading, loginError, logout } from '../../actions/authActions';
+import { login, loginSuccess, loginLoading, logout } from '../../actions/auth';
 import { LOGIN_LOADING, LOGIN_ERROR, LOGIN_SUCCESS, LOGOUT } from '../../actions/actionTypes';
 
 describe('authActions', () => {
@@ -38,22 +38,6 @@ describe('authActions', () => {
     });
   });
 
-  describe('loginError', () => {
-    it('should return LOGIN_ERROR action object', () => {
-      // Arrange 
-      const error = 'a';
-
-      // Act
-      const actionResult = loginError(error);
-
-      // Assert
-      expect(actionResult).toEqual({
-        type: LOGIN_ERROR,
-        error
-      });
-    });
-  });
-
   describe('logout', () => {
     it('should return LOGOUT action object', () => {
       // Arrange & Act
@@ -63,4 +47,4 @@ describe('authActions', () => {
       expect(actionResult).toEqual({ type: LOGOUT });
     });
   });
-})
+});
