@@ -1,0 +1,11 @@
+.nav-item a {
+  color: rgba(255, 255, 255, 0.5) !important;
+  transition: 0.2s all;
+  display: block;
+  padding: .5rem 1rem;
+}
+
+.nav-item a:hover {
+  color: rgba(255, 255, 255, 1) !important;
+  text-decoration: none !important;
+}

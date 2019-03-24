@@ -4,6 +4,8 @@ import Login from '../containers/Login';
 import Rooms from '../containers/Rooms';
 import Students from '../containers/Students';
 import StudentsBulkAdd from '../containers/StudentsBulkAdd';
+import Header from './Header';
+import IsAuthenticated from '../containers/IsAuthenticated';
 
 const authentication = (props, component) => {
   if (props.isAuthenticated) {
@@ -31,10 +33,15 @@ const isPhase = (props, phase, component) => {
 
 const Router = (props) => (
   <BrowserRouter>
-    <Route path='/' exact component={Login} />
-    <Route path='/rooms' render={() => authentication(props, <Rooms />)} />
-    <Route path='/students' exact render={() => authentication(props, <Students />)} />
-    <Route path='/students/bulk-add' exact render={() => authentication(props, <StudentsBulkAdd />)} />
+    <div>
+      <IsAuthenticated>
+        <Header />
+      </IsAuthenticated>
+      <Route path='/' exact component={Login} />
+      <Route path='/rooms' render={() => authentication(props, <Rooms />)} />
+      <Route path='/students' exact render={() => authentication(props, <Students />)} />
+      <Route path='/students/bulk-add' exact render={() => authentication(props, <StudentsBulkAdd />)} />
+    </div>
   </BrowserRouter>
 );
 

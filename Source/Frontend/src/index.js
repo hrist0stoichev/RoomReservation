@@ -16,9 +16,6 @@ const store = configureStore();
 ReactDOM.render(
   <Provider store={store}>
     <Alerts />
-    <IsAuthenticated>
-      <Header />
-    </IsAuthenticated>
     <Router />
   </Provider>,
   document.getElementById('root')

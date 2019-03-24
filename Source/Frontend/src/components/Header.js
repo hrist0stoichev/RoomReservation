@@ -14,6 +14,8 @@ import {
   Container,
   Row,
   Col } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import './Header.scss';
 
 class Header extends React.Component {
   constructor(props) {
@@ -41,7 +43,7 @@ class Header extends React.Component {
                 <Collapse isOpen={this.state.isOpen} navbar>
                   <Nav className="ml-auto" navbar>
                     <NavItem>
-                      <NavLink href="/components/">Components</NavLink>
+                        <Link to="/students">Students</Link>
                     </NavItem>
                     <UncontrolledDropdown nav inNavbar>
                       <DropdownToggle nav caret>
