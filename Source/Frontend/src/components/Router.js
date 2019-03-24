@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
-import Login from '../containers/LoginContainer';
+import Login from '../containers/Login';
 import Main from '../routes/Main';
 
 const authentication = (props, component) => {

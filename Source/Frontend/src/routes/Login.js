@@ -1,20 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { Container, Row, Col, Card, CardBody, Alert } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import LoginForm from '../components/Login/LoginForm';
 import Loader from '../components/Loader';
 import './Login.scss';
-
-const renderError = (props) => {
-  if (props.isFailed) {
-    return (
-      <Alert color="danger" className="error-alert">
-        {props.error}
-      </Alert>
-    );
-  }
-  return '';
-};
 
 const renderLoader = (props) => {
   if (props.isLoading) {
@@ -34,17 +23,15 @@ const Login = (props) => (
     <Container>
       <Row className="vh-100">
         <Col md={{ size: 10, offset: 1 }} className="my-auto position-relative">
-        {console.log(props)}
-          { renderError(props) }
           { renderIsAuthenticated(props) }
           <Card className="p-2">
             <CardBody>
               <Row>
-                <Col className="pr-5 border-right">
+                <Col className="pr-lg-5 pb-5 pb-lg-0 border-right" lg="6">
                   <LoginForm login={props.login} />
                   { renderLoader(props) }
                 </Col>
-                <Col className="pl-5">
+                <Col className="pl-lg-5" lg="6">
                   <h6 className="mb-3">Login instructions</h6>
                   <p>Please, enter your Username and Password and click the Login button below.</p>
                   <Row>
