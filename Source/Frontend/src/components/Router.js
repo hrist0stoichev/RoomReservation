@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import Login from '../containers/Login';
-import Main from '../routes/Main';
+import Rooms from '../containers/Rooms';
+import Students from '../containers/Students';
+import StudentsBulkAdd from '../containers/StudentsBulkAdd';
 
 const authentication = (props, component) => {
   if (props.isAuthenticated) {
@@ -30,7 +32,9 @@ const isPhase = (props, phase, component) => {
 const Router = (props) => (
   <BrowserRouter>
     <Route path='/' exact component={Login} />
-    <Route path='/main' render={() => authentication(props, <Main />)} />
+    <Route path='/rooms' render={() => authentication(props, <Rooms />)} />
+    <Route path='/students' exact render={() => authentication(props, <Students />)} />
+    <Route path='/students/bulk-add' exact render={() => authentication(props, <StudentsBulkAdd />)} />
   </BrowserRouter>
 );
 

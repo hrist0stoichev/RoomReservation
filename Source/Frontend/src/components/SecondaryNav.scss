@@ -7,9 +7,9 @@
     list-style: none;
     li {
       display: inline-block;
-      margin-right: 1.5rem;
+      margin-left: 1.5rem;
     }
-    li:last-of-type { padding-right: 0; }
+    li:first-of-type { margin-left: 0; }
   }
   p {
     display: inline-block;

@@ -8,7 +8,7 @@ export const login = (user) => {
     dispatch(loginLoading(true));
 
     fetch(`${config.endpoint}/token`, {
-      body: `username=${user.username}&password=${user.password}&role=admin&phase=1`,
+      body: `username=${user.username}&password=${user.password}&role=Admin&phase=1`,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       },
