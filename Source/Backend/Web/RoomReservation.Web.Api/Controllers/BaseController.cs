@@ -46,6 +46,14 @@ namespace RoomReservation.Web.Api.Controllers
             }
         }
 
+        protected int CurrentPhase
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
         protected async Task<Student> GetStudentAsync(string id)
         {
             return await this.Context.Students
