@@ -12,7 +12,7 @@ namespace RoomReservation.Web.Api.Controllers
     public class CampaignsController : BaseController
     {
         public CampaignsController(RoomReservationDbContext context, PhasesProvider phasesProvider) : base(context)
-        { 
+        {
             this.PhasesProvider = phasesProvider;
         }
 
@@ -24,6 +24,21 @@ namespace RoomReservation.Web.Api.Controllers
         {
             return this.Ok(PhasesProvider.CurrentPhase);
         }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetPhasesDates() {
+
+            DateTime[] dates = new DateTime[] {
+                PhasesProvider.Phase0Start,
+                PhasesProvider.Phase1Start,
+                PhasesProvider.Phase2Start,
+                PhasesProvider.Phase3Start,
+                PhasesProvider.Phase3End
+            };
+            return this.Ok(dates);
+        }
+
 
         [Authorize(Roles = "Admin")]
         [HttpPost]

@@ -12,7 +12,7 @@ namespace RoomReservation.Web.DataTransferModels.Room
 
         public string ApartmentRoomNumber { get; set; }
 
-        public byte ResidentsCount { get; set; }
+        public int ResidentsCount { get; set; }
 
         public virtual void CreateMappings(Profile configuration)
         {
