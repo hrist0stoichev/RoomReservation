@@ -78,7 +78,7 @@ namespace RoomReservation.Web.Api.Controllers
             {
                 var currentUser = await base.GetStudentAsync(this.CurrentUserId);
 
-                if (!IsStudentEligible(currentUser, room))
+                if (!IsEligibleForRegistration(currentUser, room))
                 {
                     return this.Unauthorized();
                 }
@@ -104,7 +104,7 @@ namespace RoomReservation.Web.Api.Controllers
                 .Include(s => s.InvitationsReceived)
                 .FirstOrDefaultAsync(s => s.Id == this.CurrentUserId);
 
-            if (!IsStudentEligible(currentUser, room))
+            if (!IsEligibleForRegistration(currentUser, room))
             {
                 return this.Unauthorized();
             }
@@ -214,14 +214,43 @@ namespace RoomReservation.Web.Api.Controllers
                 .AnyAsync(r => r.Number == number);
         }
 
-        private bool IsStudentEligible(Student student, Room room)
+        private bool IsEligibleForConfirmation(Student student, Room room)
         {
-            return student.IsOnCampus // check if the student is on campus
-            && student.CurrentRoomNumber == null // check if the student does not have a room yet
+            return !student.IsRA
+            && student.PreviousRoomNumber != null
+            && student.CurrentRoomNumber == null
+            && student.IsOnCampus
+            && PhasesProvider.CurrentPhase == 1
+            && !room.IsReserved
+            && room.Capacity > room.CurrentResidents.Count;
+        }
+
+        private bool IsEligibleToInvite(Student inviter, Student invitee, Room room)
+        {
+            return inviter.CurrentRoomNumber != null
+            && invitee.CurrentRoomNumber == null
+            && inviter.IsMale == invitee.IsMale
+            && invitee.IsOnCampus
+            && PhasesProvider.CurrentPhase > 1
+            && room.Capacity + room.ApartmentRoom.Capacity > room.CurrentResidents.Count + room.ApartmentRoom.CurrentResidents.Count;
+        }
+
+        private bool IsEligibleToAcceptInvitation(Student student, Room room)
+        {
+            return student.CurrentRoomNumber == null
+            && student.IsOnCampus
+            && room.Capacity + room.ApartmentRoom.Capacity > room.CurrentResidents.Count + room.ApartmentRoom.CurrentResidents.Count;
+        }
+
+        private bool IsEligibleForRegistration(Student student, Room room)
+        {
+            return student.CurrentRoomNumber == null // check if the student doesn't have a room
+            && student.IsOnCampus // check if the student is on campus
             && student.RegistrationTime < DateTime.Now // check if the registration time of the student has already come
             && (room.IsMale == null || student.IsMale == room.IsMale) // check if the room is the same sex as the student
             && room.Capacity > room.CurrentResidents.Count // check if the room is not already full
-            && !room.IsReserved; // check if the room is not reserved
+            && !room.IsReserved // check if the room is not reserved
+            && PhasesProvider.CurrentPhase > 2;
         }
     }
 }
