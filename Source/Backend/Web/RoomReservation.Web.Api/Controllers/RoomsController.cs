@@ -19,7 +19,7 @@ namespace RoomReservation.Web.Api.Controllers
         public RoomsController(RoomReservationDbContext context, PhasesProvider phasesProvider) : base(context)
         {
             this.PhasesProvider = phasesProvider;
-         }
+        }
 
         private PhasesProvider PhasesProvider { get; }
 
@@ -87,6 +87,36 @@ namespace RoomReservation.Web.Api.Controllers
             }
         }
 
+        [HttpPut("confirm")]
+        [Authorize]
+        public async Task<IActionResult> ConfirmRoom()
+        {
+            var currentStudent = await base.GetStudentAsync(this.CurrentUserId);
+
+            if (currentStudent.PreviousRoomNumber == null)
+            {
+                return BadRequest(new { error_message = "Current student do not have a room to confirm" });
+            }
+
+            var room = await this.Context.Rooms
+                .Include(r => r.CurrentResidents)
+                .FirstOrDefaultAsync(r => r.Number == currentStudent.PreviousRoomNumber);
+
+            if (!IsEligibleForConfirmation(currentStudent, room))
+            {
+                return this.Unauthorized();
+            }
+
+            currentStudent.CurrentRoomNumber = room.Number;
+            currentStudent.RegistrationTime = null;
+
+            room.IsMale = currentStudent.IsMale;
+
+            await this.Context.SaveChangesAsync();
+
+            return this.Ok();
+        }
+
         [HttpPost("{number}/join")]
         [Authorize]
         public async Task<IActionResult> JoinRoom(string number)
@@ -122,10 +152,10 @@ namespace RoomReservation.Web.Api.Controllers
             {
                 room.IsMale = currentUser.IsMale;
             }
-            
+
             // Delete all invitations that the user has received in the past
             currentUser.InvitationsReceived.Clear();
-            
+
             await this.Context.SaveChangesAsync();
 
             return this.Ok();
