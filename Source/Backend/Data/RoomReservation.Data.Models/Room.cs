@@ -30,7 +30,9 @@ namespace RoomReservation.Data.Models
 
         public Room ApartmentRoom { get; set; }
 
-        public List<Student> Residents { get; set; }
+        public List<Student> CurrentResidents { get; set; }
+
+        public List<Student> PreviousResidents { get; set; }
 
         public List<Invitation> Invitations { get; set; }
     }

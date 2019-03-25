@@ -21,8 +21,14 @@ namespace RoomReservation.Data
             builder.Entity<Student>(student =>
             {
                 student.HasOne(s => s.CurrentRoom)
-                    .WithMany(r => r.Residents)
+                    .WithMany(r => r.CurrentResidents)
                     .HasForeignKey(s => s.CurrentRoomNumber)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                student.HasOne(s => s.PreviousRoom)
+                    .WithMany(r => r.PreviousResidents)
+                    .HasForeignKey(s => s.PreviousRoomNumber)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
             });

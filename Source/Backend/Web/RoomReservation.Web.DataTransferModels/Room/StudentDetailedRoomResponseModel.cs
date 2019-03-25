@@ -15,8 +15,8 @@ namespace RoomReservation.Web.DataTransferModels.Room
         public override void CreateMappings(Profile configuration)
         {
             configuration.CreateMap<Room, StudentDetailedRoomResponseModel>()
-                .ForMember(lrrm => lrrm.ResidentsCount, opts => opts.MapFrom(r => r.Residents.Count))
-                .ForMember(lrrm => lrrm.ResidentsNames, opts => opts.MapFrom(r => r.Residents.Select(s => s.FirstName + " " + s.LastName)));
+                .ForMember(lrrm => lrrm.ResidentsCount, opts => opts.MapFrom(r => r.CurrentResidents.Count))
+                .ForMember(lrrm => lrrm.ResidentsNames, opts => opts.MapFrom(r => r.CurrentResidents.Select(s => s.FirstName + " " + s.LastName)));
         }
     }
 }

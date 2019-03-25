@@ -16,26 +16,35 @@ namespace RoomReservation.Web.Api.Controllers
 {
     public class RoomsController : BaseController
     {
-        public RoomsController(RoomReservationDbContext context) : base(context)
-        { }
+        public RoomsController(RoomReservationDbContext context, PhasesProvider phasesProvider) : base(context)
+        {
+            this.PhasesProvider = phasesProvider;
+         }
+
+        private PhasesProvider PhasesProvider { get; }
 
         [Authorize]
         public async Task<IActionResult> Get(string skaptoNumber, string floor)
         {
-            var roomNumberPattern = skaptoNumber + floor + "??";
+            var roomNumberPattern = skaptoNumber + floor + "__";
 
             var roomsQuery = this.Context.Rooms
                 .AsNoTracking()
                 .Where(r => EF.Functions.Like(r.Number, roomNumberPattern));
 
             // Students can only view rooms that are not full and whose residents are from the same sex
-            if (!this.User.IsInRole("Admin"))
+            if (this.User.IsInRole("Student"))
             {
-                // TODO: Maybe add this to the token instead of getting the user from the database every time
+                // Return an empty list if the application is not in any phase
+                if (PhasesProvider.CurrentPhase == -1)
+                {
+                    return this.Ok(new List<ListedRoomResponseModel>());
+                }
+
                 var currentUser = await base.GetStudentAsync(this.CurrentUserId);
 
                 roomsQuery = roomsQuery
-                    .Where(r => r.Capacity > r.Residents.Count)
+                    .Where(r => r.Capacity > r.CurrentResidents.Count)
                     .Where(r => r.IsMale == null || r.IsMale == currentUser.IsMale);
             }
 
@@ -52,7 +61,7 @@ namespace RoomReservation.Web.Api.Controllers
         {
             var room = await this.Context.Rooms
                 .AsNoTracking()
-                .Include(r => r.Residents)
+                .Include(r => r.CurrentResidents)
                 .Include(r => r.Invitations)
                 .FirstOrDefaultAsync(r => r.Number == number);
 
@@ -83,7 +92,7 @@ namespace RoomReservation.Web.Api.Controllers
         public async Task<IActionResult> JoinRoom(string number)
         {
             var room = await this.Context.Rooms
-                .Include(r => r.Residents)
+                .Include(r => r.CurrentResidents)
                 .FirstOrDefaultAsync(r => r.Number == number);
 
             if (room == null)
@@ -100,16 +109,16 @@ namespace RoomReservation.Web.Api.Controllers
                 return this.Unauthorized();
             }
 
-            room.Residents.Add(currentUser);
+            room.CurrentResidents.Add(currentUser);
 
             // If the room becomes full, delete all invitations for it
-            if (room.Capacity == room.Residents.Count)
+            if (room.Capacity == room.CurrentResidents.Count)
             {
                 room.Invitations.Clear();
             }
 
             // If this is the first resident in the room, mark the room to be the same sex
-            if (room.Residents.Count == 1)
+            if (room.CurrentResidents.Count == 1)
             {
                 room.IsMale = currentUser.IsMale;
             }
@@ -144,7 +153,7 @@ namespace RoomReservation.Web.Api.Controllers
         public async Task<IActionResult> Put(string number, RoomRequestModel model)
         {
             var roomToModify = await this.Context.Rooms
-                .Include(r => r.Residents)
+                .Include(r => r.CurrentResidents)
                 .FirstOrDefaultAsync(r => r.Number == number);
 
             if (roomToModify == null)
@@ -157,12 +166,12 @@ namespace RoomReservation.Web.Api.Controllers
                 return this.BadRequest(new { error_message = "The specified room number is already existing! " });
             }
 
-            if (model.Capacity < roomToModify.Residents.Count)
+            if (model.Capacity < roomToModify.CurrentResidents.Count)
             {
                 return this.BadRequest(new { error_message = "The capacity cannot be lower than the current number of residents" });
             }
 
-            if (roomToModify.Residents.Any(s => s.IsMale != model.IsMale))
+            if (roomToModify.CurrentResidents.Any(s => s.IsMale != model.IsMale))
             {
                 return this.BadRequest(new { error_message = "There are residents from the opposite sex already occupying this room!" });
             }
@@ -207,14 +216,11 @@ namespace RoomReservation.Web.Api.Controllers
 
         private bool IsStudentEligible(Student student, Room room)
         {
-            return student != null // check if the student is present in the database
-            && !student.IsBanned // check if student is not banned
-            && student.IsDepositPaid // check if student has paid their deposit
-            && student.IsOnCampus // check if the student is on campus
+            return student.IsOnCampus // check if the student is on campus
             && student.CurrentRoomNumber == null // check if the student does not have a room yet
             && student.RegistrationTime < DateTime.Now // check if the registration time of the student has already come
             && (room.IsMale == null || student.IsMale == room.IsMale) // check if the room is the same sex as the student
-            && room.Capacity > room.Residents.Count // check if the room is not already full
+            && room.Capacity > room.CurrentResidents.Count // check if the room is not already full
             && !room.IsReserved; // check if the room is not reserved
         }
     }

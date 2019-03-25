@@ -20,6 +20,7 @@ namespace RoomReservation.Web.Api
             this.Phase2Start = DateTime.ParseExact(config["Phases:Phase2Start"], "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             this.Phase3Start = DateTime.ParseExact(config["Phases:Phase3Start"], "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             this.Phase3End = DateTime.ParseExact(config["Phases:Phase3End"], "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            this.Phase4End = this.Phase3End.AddDays(1);
         }
 
         public DateTime Phase0Start { get; private set; }
@@ -31,6 +32,8 @@ namespace RoomReservation.Web.Api
         public DateTime Phase3Start { get; private set; }
 
         public DateTime Phase3End { get; private set; }
+
+        public DateTime Phase4End { get; private set; }
 
         public int CurrentPhase
         {
@@ -46,6 +49,8 @@ namespace RoomReservation.Web.Api
                         return 2;
                     case DateTime now when (now >= this.Phase3Start && now < this.Phase3End):
                         return 3;
+                    case DateTime now when (now >= this.Phase3End && now < this.Phase4End):
+                        return 4;
                     default:
                         return -1;
                 }
@@ -73,6 +78,7 @@ namespace RoomReservation.Web.Api
             this.Phase2Start = (DateTime)model.Phase2Start;
             this.Phase3Start = (DateTime)model.Phase3Start;
             this.Phase3End = (DateTime)model.Phase3End;
+            this.Phase4End = ((DateTime)model.Phase3End).AddDays(1);
         }
     }
 }

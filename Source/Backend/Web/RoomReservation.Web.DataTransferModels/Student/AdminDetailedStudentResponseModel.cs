@@ -28,11 +28,7 @@ namespace RoomReservation.Web.DataTransferModels.Student
 
         public bool IsRoomConfirmed { get; set; }
 
-        public bool IsBanned { get; set; }
-
         public bool IsOnCampus { get; set; }
-
-        public bool IsDepositPaid { get; set; }
 
         public string Comments { get; set; }
 

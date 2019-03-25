@@ -40,13 +40,7 @@ namespace RoomReservation.Data.Models
         public bool IsRA { get; set; }
 
         [Required]
-        public bool IsBanned { get; set; }
-
-        [Required]
         public bool IsOnCampus { get; set; }
-
-        [Required]
-        public bool IsDepositPaid { get; set; }
 
         [MaxLength(500)]
         public string Comments { get; set; }
@@ -54,6 +48,10 @@ namespace RoomReservation.Data.Models
         public string CurrentRoomNumber { get; set; }
 
         public Room CurrentRoom { get; set; }
+
+        public string PreviousRoomNumber { get; set; }
+
+        public Room PreviousRoom { get; set; }
 
         public List<Invitation> InvitationsSent { get; set; }
 

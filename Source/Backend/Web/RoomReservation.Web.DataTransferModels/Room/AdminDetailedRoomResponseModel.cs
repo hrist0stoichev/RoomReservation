@@ -27,7 +27,7 @@ namespace RoomReservation.Web.DataTransferModels.Room
         public override void CreateMappings(Profile configuration)
         {
             configuration.CreateMap<Room, AdminDetailedRoomResponseModel>()
-                .ForMember(lrrm => lrrm.ResidentsCount, opts => opts.MapFrom(r => r.Residents.Count));
+                .ForMember(lrrm => lrrm.ResidentsCount, opts => opts.MapFrom(r => r.CurrentResidents.Count));
         }
     }
 }
