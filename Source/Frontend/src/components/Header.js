@@ -6,7 +6,6 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -16,20 +15,41 @@ import {
   Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './Header.scss';
+import IsAuthenticated from '../containers/IsAuthenticated';
 
 class Header extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
     this.state = {
       isOpen: false
     };
+
+    this.toggle = this.toggle.bind(this);
+    this.renderLoginDropdown = this.renderLoginDropdown.bind(this);
   }
+
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
     });
+  }
+
+  renderLoginDropdown() {
+    return (
+      <IsAuthenticated>
+        <UncontrolledDropdown nav inNavbar>
+          <DropdownToggle nav caret>
+            Settings
+          </DropdownToggle>
+          <DropdownMenu right>
+            <DropdownItem onClick={this.props.logout}>
+              Logout
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      </IsAuthenticated>
+    );
   }
   render() {
     return (
@@ -48,23 +68,10 @@ class Header extends React.Component {
                     <NavItem>
                       <Link to="/campaign">Campaign</Link>
                     </NavItem>
-                    <UncontrolledDropdown nav inNavbar>
-                      <DropdownToggle nav caret>
-                        Options
-                      </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem>
-                          Option 1
-                        </DropdownItem>
-                        <DropdownItem>
-                          Option 2
-                        </DropdownItem>
-                        <DropdownItem divider />
-                        <DropdownItem>
-                          Reset
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
+                    <NavItem>
+                      <Link to="/rooms">Rooms</Link>
+                    </NavItem>
+                    {this.renderLoginDropdown()}
                   </Nav>
                 </Collapse>
               </Navbar>

@@ -22,7 +22,7 @@ namespace RoomReservation.Web.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Get(string skaptoNumber, string floor)
         {
-            var roomNumberPattern = skaptoNumber + floor + "??";
+            var roomNumberPattern = skaptoNumber + floor + "%";
 
             var roomsQuery = this.Context.Rooms
                 .AsNoTracking()

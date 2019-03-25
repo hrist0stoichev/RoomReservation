@@ -1,11 +1,7 @@
-import { login, loginSuccess, loginLoading, logout } from '../../actions/auth';
-import { LOGIN_LOADING, LOGIN_ERROR, LOGIN_SUCCESS, LOGOUT } from '../../actions/actionTypes';
+import { loginSuccess, loginLoading, logout, tokenValidated } from '../../actions/auth';
+import { LOGIN_LOADING, LOGIN_SUCCESS, LOGOUT, TOKEN_VALIDATED } from '../../actions/actionTypes';
 
 describe('authActions', () => {
-  describe('login', () => {
-    // TODO
-  });
-
   describe('loginSuccess', () => {
     it('should return LOGIN_SUCCESS action object', () => {
       // Arrange
@@ -45,6 +41,20 @@ describe('authActions', () => {
 
       // Assert
       expect(actionResult).toEqual({ type: LOGOUT });
+    });
+  });
+
+  describe('tokenValidated', () => {
+    it('should return TOKEN_VALIDATED action object', () => {
+      // Arrange & Act
+      const actionResult = tokenValidated('x', '1');
+
+      // Assert
+      expect(actionResult).toEqual({
+        type: TOKEN_VALIDATED,
+        accessToken: 'x',
+        phase: '1',
+      });
     });
   });
 });

@@ -27,14 +27,16 @@ const StudentsGrid = (props) => {
   } else {
     return (
         <div 
-        className="ag-theme-balham"
+        className="ag-theme-material"
         style={{ 
         height: '500px', 
         width: '100%' }} 
         >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={props.students}>
+          rowData={props.students}
+          paginationAutoPageSize={true}
+          pagination={true}>
         </AgGridReact>
       </div>
     );

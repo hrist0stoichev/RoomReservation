@@ -1,8 +1,16 @@
 import { connect } from 'react-redux';
 import Rooms from '../routes/Rooms';
+import { fetchRooms } from '../actions/rooms';
 
 const mapStateToProps = state => ({
-  accessToken: state.auth.accessToken
+  rooms: state.rooms.rooms,
+  isLoading: state.rooms.isLoading,
 });
 
-export default connect(mapStateToProps)(Rooms);
+const mapDispatchToProps = dispatch => ({
+  fetchRooms() {
+    dispatch(fetchRooms());
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Rooms);

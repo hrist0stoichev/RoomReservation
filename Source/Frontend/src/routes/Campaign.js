@@ -2,10 +2,11 @@ import React from 'react';
 import MainLayout from '../components/MainLayout';
 import { Row, Col, Card, CardTitle, CardBody, CardText } from 'reactstrap';
 import NewCampaignForm from '../components/Campaign/NewCampaignForm';
+import CurrentCampaign from '../components/Campaign/CurrentCampaign';
 
 class Campaign extends React.Component {
   componentWillMount() {
-    console.log('TOTO::fetch campaign data');
+    this.props.getCampaign();
   }
 
   render() {
@@ -21,6 +22,7 @@ class Campaign extends React.Component {
                 <CardBody>
                   <CardTitle>Current Campaign</CardTitle>
                   <CardText>
+                    <CurrentCampaign campaign={this.props.campaign} />
                   </CardText>
                 </CardBody>
               </Card>
@@ -30,7 +32,7 @@ class Campaign extends React.Component {
                 <CardBody>
                   <CardTitle>Start Campaign</CardTitle>
                   <CardText>
-                    <NewCampaignForm createCampaign={this.props.createCampaign} />
+                    <NewCampaignForm getCampaign={this.props.getCampaign} createCampaign={this.props.createCampaign} isDone={this.props.isDone} isLoading={this.props.isLoading} />
                   </CardText>
                 </CardBody>
               </Card>

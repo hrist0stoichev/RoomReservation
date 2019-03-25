@@ -1,4 +1,4 @@
-import { LOGIN_LOADING, LOGIN_SUCCESS, LOGOUT } from '../actions/actionTypes';
+import { LOGIN_LOADING, LOGIN_SUCCESS, LOGOUT, TOKEN_VALIDATED } from '../actions/actionTypes';
 
 const initialState = {
   isLoading: false,
@@ -25,7 +25,17 @@ const auth = (state = initialState, action) => {
         userRole: action.user.userRole,
         phase: action.user.phase
       };
+    case TOKEN_VALIDATED: {
+      return {
+        ...state,
+        isAuthenticated: true,
+        accessToken: action.accessToken,
+        phase: action.phase,
+        userRole: 'Admin' // TODO:: GET ROLE FROM API
+      };
+    }
     case LOGOUT:
+      localStorage.removeItem('token');
       return initialState;
     default:
       return state;

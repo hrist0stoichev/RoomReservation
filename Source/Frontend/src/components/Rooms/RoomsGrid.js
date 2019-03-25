@@ -1,28 +1,38 @@
-import React, { Component } from 'react'
-import config from '../../config';
+import React from 'react';
+import Loader from '../Loader';
+import { AgGridReact } from 'ag-grid-react';
 
-class RoomsGrid extends Component {
-  componentDidMount() {
-    console.log(this.props);
-    console.log(this.props.accessToken);
-    fetch(`${config.endpoint}/students`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.props.accessToken}`
-      }
-    })
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .catch(error => console.log('error', error));
-  }
-  render() {
+const columnDefs = [
+  { headerName: "Number", field: "Number", sortable: true, filter: true },
+  { headerName: "Capacity", field: "Capacity", sortable: true, filter: true },
+  { headerName: "RA Room", field: "IsRA", sortable: true, filter: true },
+  { headerName: "Sex", field: "IsMale", sortable: true, filter: true },
+  { headerName: "Reserved", field: "IsReserved", sortable: true, filter: true },
+  { headerName: "Comments", field: "Comments", sortable: true, filter: true },
+];
+
+const RoomsGrid = (props) => {
+  if (props.isLoading) {
     return (
-      <div>
-        
+      <Loader />
+    );
+  } else {
+    return (
+        <div 
+        className="ag-theme-material"
+        style={{ 
+        height: '500px', 
+        width: '100%' }} 
+        >
+        <AgGridReact
+          columnDefs={columnDefs}
+          rowData={props.rooms}
+          paginationAutoPageSize={true}
+          pagination={true}>
+        </AgGridReact>
       </div>
-    )
+    );
   }
-}
+};
 
 export default RoomsGrid;

@@ -1,5 +1,5 @@
 import reducer from '../../reducers/auth';
-import { loginLoading, loginSuccess, loginError, logout } from '../../actions/auth';
+import { loginLoading, loginSuccess, tokenValidated, logout } from '../../actions/auth';
 
 const initialState = {
   isLoading: false,
@@ -56,5 +56,15 @@ describe('authReducer', () => {
 
     // Assert
     expect(state).toEqual(initialState);
+  });
+
+  it('should handle TOKEN_VALIDATED action', () => {
+    // Arrange & Act
+    const action = tokenValidated('x', '1');
+    const state = reducer(initialState, action);
+
+    // Assert
+    expect(state.accessToken).toEqual('x');
+    expect(state.userRole).toEqual('1');
   });
 });

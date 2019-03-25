@@ -4,26 +4,57 @@ import makeActionCreator from './makeActionCreator';
 import config from '../config.js';
 
 export const getCampaign = () => {
-  return (dispatch) => {
-    dispatch(loginLoading(true));
+  return (dispatch, getState) => {
+    fetch(`${config.endpoint}/campaigns/dates`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getState().auth.accessToken}`,
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        dispatch(getCampaignDone(res));
+      })
+      .catch(error => {
+        dispatch(showError(error.toString()));
+      });
+  }
+};
 
-    fetch(`${config.endpoint}/campaigns/`, {
+
+export const createCampaign = (dates) => {
+  return (dispatch, getState) => {
+    dispatch(createCampaignLoading(true));
+    fetch(`${config.endpoint}/campaigns`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getState().auth.accessToken}`,
       },
-      method: "POST"
+      body: JSON.stringify({
+        Phase1Start: dates.phase1start,
+        Phase2Start: dates.phase2start,
+        Phase3Start: dates.phase3start,
+        Phase3End: dates.phase3end,
+      }),
     })
       .then(res => res.json())
       .then(res => {
-        dispatch(loginLoading(false));
-        dispatch(loginSuccess(res));
+        if (res.status === 400) {
+          dispatch(createCampaignLoading(false));
+          dispatch(showError('Could not create campaign. Check the dates and try again.'));
+        } else {
+          dispatch(createCampaignLoading(false));
+          dispatch(createCampaignSuccess());
+        }
+        dispatch(getCampaign());
       })
       .catch(error => {
-        dispatch(loginLoading(false));
+        dispatch(createCampaignLoading(false));
         dispatch(showError(error.toString()));
+        dispatch(getCampaign());
       });
-  }
+  };
 };
 
 export const createCampaignLoading = makeActionCreator(CREATE_CAMPAIGN_LOADING, 'isLoading');

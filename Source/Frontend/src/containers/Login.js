@@ -9,7 +9,8 @@ const mapStateToProps = state => ({
   username: state.auth.username,
   accessToken: state.auth.accessToken,
   userRole: state.auth.userRole,
-  phase: state.auth.phase
+  phase: state.auth.phase,
+  loc: state.auth.loc
 });
 
 const mapDispatchToProps = dispatch => ({

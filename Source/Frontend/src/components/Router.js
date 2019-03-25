@@ -5,7 +5,7 @@ import Rooms from '../containers/Rooms';
 import Students from '../containers/Students';
 import Campaign from '../containers/Campaign';
 import StudentsBulkAdd from '../containers/StudentsBulkAdd';
-import Header from './Header';
+import Header from '../containers/Header';
 import IsAuthenticated from '../containers/IsAuthenticated';
 
 const authentication = (props, component) => {
