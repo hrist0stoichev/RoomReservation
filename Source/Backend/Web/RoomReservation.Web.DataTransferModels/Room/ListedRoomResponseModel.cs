@@ -17,7 +17,7 @@ namespace RoomReservation.Web.DataTransferModels.Room
         public virtual void CreateMappings(Profile configuration)
         {
             configuration.CreateMap<Room, ListedRoomResponseModel>()
-                .ForMember(lrrm => lrrm.ResidentsCount, opts => opts.MapFrom(r => r.Residents.Count));
+                .ForMember(lrrm => lrrm.ResidentsCount, opts => opts.MapFrom(r => r.CurrentResidents.Count));
         }
     }
 }
