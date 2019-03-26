@@ -1,5 +1,4 @@
 import React from 'react';
-import Loader from '../Loader';
 import { AgGridReact } from 'ag-grid-react';
 
 const columnDefs = [
@@ -11,22 +10,22 @@ const columnDefs = [
   { headerName: "Comments", field: "Comments", sortable: true, filter: true },
 ];
 
-const RoomsGrid = (props) => {
-  if (props.isLoading) {
+class RoomsGrid extends React.Component {
+  componentWillMount() {
+    this.props.fetchRooms(this.props.sk, this.props.floor);
+  }
+
+  render() {
     return (
-      <Loader />
-    );
-  } else {
-    return (
-        <div 
-        className="ag-theme-material"
-        style={{ 
-        height: '500px', 
-        width: '100%' }} 
-        >
+      <div 
+      className="ag-theme-material"
+      style={{ 
+      height: '500px', 
+      width: '100%' }} 
+      >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={props.rooms}
+          rowData={this.props.rooms}
           paginationAutoPageSize={true}
           pagination={true}>
         </AgGridReact>

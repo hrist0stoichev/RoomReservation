@@ -1,0 +1,33 @@
+.f-item {
+  font-weight: bolder !important;
+  color: rgba(0, 0, 0, 0.55);
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  transition: 0.2s all;
+  .list-group-item {
+    border-radius: 0 !important;
+    margin-bottom: -1px !important;
+  }
+  &:hover {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.89);
+    .list-group-item {
+      background:#efefef;
+    }
+  }
+
+}
+
+.f-item:first-of-type {
+  .list-group-item {
+    border-top-left-radius: 0.25rem !important;
+    border-top-right-radius: 0.25rem !important;
+  }
+}
+
+.f-item:last-of-type {
+  .list-group-item {
+    border-bottom-left-radius: 0.25rem !important;
+    border-bottom-right-radius: 0.25rem !important;
+  }
+}

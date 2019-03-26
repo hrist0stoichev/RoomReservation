@@ -5,6 +5,8 @@ import Loader from '../Loader';
 import moment from 'moment';
 import './NewCampaignForm.scss';
 
+const dateFilter = date => date.toISOString().split('.')[0];
+
 class NewCampaignForm extends React.Component {
   constructor(props) {
     super(props);
@@ -28,12 +30,12 @@ class NewCampaignForm extends React.Component {
 
   buttonHandler() {
     this.props.createCampaign({
-      phase1start: this.state.phase1start.toISOString(),
-      phase1end: this.state.phase1end.toISOString(),
-      phase2start: this.state.phase2start.toISOString(),
-      phase2end: this.state.phase2end.toISOString(),
-      phase3start: this.state.phase3start.toISOString(),
-      phase3end: this.state.phase3end.toISOString(),
+      phase1start: dateFilter(this.state.phase1start),
+      phase1end: dateFilter(this.state.phase1end),
+      phase2start: dateFilter(this.state.phase2start),
+      phase2end: dateFilter(this.state.phase2end),
+      phase3start: dateFilter(this.state.phase3start),
+      phase3end: dateFilter(this.state.phase3end),
     });
   }
 

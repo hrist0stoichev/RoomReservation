@@ -1,12 +1,8 @@
 import React from 'react';
 import MainLayout from '../components/MainLayout';
-import RoomsGrid from '../components/Rooms/RoomsGrid';
+import Buildings from '../components/Rooms/Buildings';
 
 class Rooms extends React.Component {
-  componentWillMount() {
-    this.props.fetchRooms();
-  }
-
   render() {
     return (
       <div id="rooms">
@@ -14,7 +10,7 @@ class Rooms extends React.Component {
           title="Rooms"
           secondaryNav={[]}
         >
-          <RoomsGrid rooms={this.props.rooms} isLoading={this.props.isLoading} />
+          <Buildings />
         </MainLayout>
       </div>
     );
