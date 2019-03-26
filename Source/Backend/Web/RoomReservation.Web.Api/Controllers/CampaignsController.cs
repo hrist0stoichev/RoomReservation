@@ -45,7 +45,6 @@ namespace RoomReservation.Web.Api.Controllers
             return this.Ok(dates);
         }
 
-
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> StartCampaign(CampaignRequestModel model)
