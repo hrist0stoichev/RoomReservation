@@ -49,10 +49,10 @@ namespace RoomReservation.Web.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> StartCampaign(CampaignRequestModel model)
         {
-            // if (PhasesProvider.CurrentPhase != -1)
-            // {
-            //     return BadRequest(new { error_message = "Cannot start a new campaign until the old one is finished" });
-            // }
+            if (PhasesProvider.CurrentPhase != -1)
+            {
+                return BadRequest(new { error_message = "Cannot start a new campaign until the old one is finished" });
+            }
 
             var rooms = await this.Context.Rooms
                 .Where(r => !r.IsReserved)
@@ -87,6 +87,12 @@ namespace RoomReservation.Web.Api.Controllers
                 students[studentIndex].RegistrationTime = i;
                 studentIndex++;
             }
+
+            // Remove all invitations
+            var invitations = await this.Context.Invitations
+                .ToListAsync();
+
+            this.Context.Invitations.RemoveRange(invitations);
 
             await this.Context.SaveChangesAsync();
 

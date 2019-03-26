@@ -336,7 +336,7 @@ namespace RoomReservation.Web.Api.Controllers
             }
 
             room1.ApartmentRoomNumber = room2.Number;
-            room1.ApartmentRoomNumber = room1.Number;
+            room2.ApartmentRoomNumber = room1.Number;
 
             await this.Context.SaveChangesAsync();
 
