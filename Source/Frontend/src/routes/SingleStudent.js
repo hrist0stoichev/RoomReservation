@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Row, Col, Input } from 'reactstrap';
 import MainLayout from '../components/MainLayout';
-import './SingleStudent.scss';
+import './SingleView.scss';
 
 export class SingleStudent extends Component {
   constructor(props) {
@@ -22,7 +22,7 @@ export class SingleStudent extends Component {
   render() {
     return (
       <MainLayout title="Students" secondaryNav={[]}>
-        <div id="single-student">
+        <div id="single-view">
         {console.log(this.state.student)}
           <Row>
             <Col>

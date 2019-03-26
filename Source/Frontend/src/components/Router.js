@@ -9,6 +9,7 @@ import Header from '../containers/Header';
 import IsAuthenticated from '../containers/IsAuthenticated';
 import RoomsView from '../routes/RoomsView';
 import SingleStudent from '../containers/SingleStudent';
+import RoomsSingle from '../containers/RoomsSingle';
 
 const authentication = (props, component) => {
   if (props.isAuthenticated) {
@@ -42,6 +43,7 @@ const Router = (props) => (
       </IsAuthenticated>
       <Route path='/' exact component={Login} />
       <Route path='/rooms' exact render={() => authentication(props, <Rooms />)} />
+      <Route path='/rooms/single' exact render={() => authentication(props, <RoomsSingle />)} />
       <Route path='/rooms/view' render={() => authentication(props, <RoomsView />)} />
       <Route path='/students' exact render={() => authentication(props, <Students />)} />
       <Route path='/students/bulk-add' exact render={() => authentication(props, <StudentsBulkAdd />)} />
