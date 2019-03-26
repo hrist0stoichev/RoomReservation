@@ -205,11 +205,11 @@ namespace RoomReservation.Web.Api.Controllers
             if (room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) == room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0))
             {
                 this.Context.Invitations.RemoveRange(room.Invitations);
+
                 if (room.ApartmentRoom != null)
                 {
                     this.Context.Invitations.RemoveRange(room.ApartmentRoom.Invitations);
                 }
-                
             }
 
             this.Context.Invitations.RemoveRange(currentStudent.InvitationsReceived);
@@ -226,6 +226,7 @@ namespace RoomReservation.Web.Api.Controllers
         {
             var room = await this.Context.Rooms
                 .Include(r => r.CurrentResidents)
+                .Include(r => r.Invitations)
                 .FirstOrDefaultAsync(r => r.Number == number);
 
             if (room == null)
@@ -247,7 +248,7 @@ namespace RoomReservation.Web.Api.Controllers
             // If the room becomes full, delete all invitations for it
             if (room.Capacity == room.CurrentResidents.Count)
             {
-                room.Invitations.Clear();
+                this.Context.Invitations.RemoveRange(room.Invitations);
             }
 
             // If this is the first resident in the room, mark the room to be the same sex
@@ -257,7 +258,8 @@ namespace RoomReservation.Web.Api.Controllers
             }
 
             // Delete all invitations that the user has received in the past
-            currentUser.InvitationsReceived.Clear();
+            this.Context.Invitations.RemoveRange(currentUser.InvitationsReceived);
+            currentUser.RegistrationTime = null;
 
             await this.Context.SaveChangesAsync();
 
@@ -383,7 +385,7 @@ namespace RoomReservation.Web.Api.Controllers
             && (room.IsMale == null || student.IsMale == room.IsMale) // check if the room is the same sex as the student
             && room.Capacity > room.CurrentResidents.Count // check if the room is not already full
             && !room.IsReserved // check if the room is not reserved
-            && PhasesProvider.CurrentPhase > 2;
+            && (PhasesProvider.CurrentPhase > 2 || student.IsRA); // Check if it is the registration phase or the use is RA
         }
     }
 }
