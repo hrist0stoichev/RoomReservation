@@ -117,6 +117,44 @@ namespace RoomReservation.Web.Api.Controllers
             return this.Ok();
         }
 
+        [HttpPut("invite/{id}")]
+        [Authorize]
+        public async Task<IActionResult> Invite(string id)
+        {
+            var invitee = await this.Context.Students
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (invitee == null)
+            {
+                return this.NotFound();
+            }
+
+            var inviter = await this.Context.Students
+                .Include(s => s.CurrentRoom)
+                    .ThenInclude(r => r.CurrentResidents)
+                .Include(s => s.CurrentRoom)
+                    .ThenInclude(r => r.ApartmentRoom)
+                        .ThenInclude(ar => ar.CurrentResidents)
+                .FirstOrDefaultAsync(s => s.Id == this.CurrentUserId);
+
+            if (!IsEligibleToInvite(inviter, invitee, inviter.CurrentRoom))
+            {
+                return this.Unauthorized();
+            }
+
+            var invitation = new Invitation()
+            {
+                FromStudentId = inviter.Id,
+                ToStudentId = invitee.Id,
+                RoomNumber = inviter.CurrentRoomNumber
+            };
+
+            await this.Context.Invitations.AddAsync(invitation);
+            await this.Context.SaveChangesAsync();
+
+            return this.Ok();
+        }
+
 
         [HttpPut("{number}/accept")]
         [Authorize]
@@ -163,17 +201,13 @@ namespace RoomReservation.Web.Api.Controllers
                 room.ApartmentRoom.CurrentResidents.Add(currentStudent);
             }
 
-            var apartmentRoom = room.ApartmentRoom;
-            var apartmentRoomCapacity = apartmentRoom != null ? apartmentRoom.Capacity : 0;
-            var apartmentRoomResidentsCount = apartmentRoom != null ? apartmentRoom.CurrentResidents.Count : 0;
-
             // Check if the apartment is full and delete all invitations
-            if (room.Capacity + apartmentRoomCapacity== room.CurrentResidents.Count + apartmentRoomResidentsCount)
+            if (room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) == room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0))
             {
                 this.Context.Invitations.RemoveRange(room.Invitations);
-                if (apartmentRoom != null)
+                if (room.ApartmentRoom != null)
                 {
-                    this.Context.Invitations.RemoveRange(apartmentRoom.Invitations);
+                    this.Context.Invitations.RemoveRange(room.ApartmentRoom.Invitations);
                 }
                 
             }
@@ -331,18 +365,14 @@ namespace RoomReservation.Web.Api.Controllers
             && inviter.IsMale == invitee.IsMale
             && invitee.IsOnCampus
             && PhasesProvider.CurrentPhase > 1
-            && room.Capacity + room.ApartmentRoom.Capacity > room.CurrentResidents.Count + room.ApartmentRoom.CurrentResidents.Count;
+            && room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) > room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0);
         }
 
         private bool IsEligibleToAcceptInvitation(Student student, Room room)
         {
-            var apartmentRoom = room.ApartmentRoom;
-            var apartmentRoomCapacity = apartmentRoom != null ? apartmentRoom.Capacity : 0;
-            var apartmentRoomResidentsCount = apartmentRoom != null ? apartmentRoom.CurrentResidents.Count : 0;
-
             return student.CurrentRoomNumber == null
             && student.IsOnCampus
-            && room.Capacity + apartmentRoomCapacity > room.CurrentResidents.Count + apartmentRoomResidentsCount;
+            && room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) > room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0);
         }
 
         private bool IsEligibleForRegistration(Student student, Room room)
