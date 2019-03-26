@@ -8,18 +8,19 @@ namespace RoomReservation.Web.Api
 {
     public class PhasesProvider
     {
-
         private readonly string APPSETTINGS_PATH;
+        private readonly string DATES_FORMAT;
 
         public PhasesProvider(IConfiguration config)
         {
             APPSETTINGS_PATH = System.IO.Path.Combine(Environment.CurrentDirectory.ToString(), "appsettings.json");
+            DATES_FORMAT = "yyyy-MM-ddTHH:mm:ss";
 
-            this.Phase0Start = DateTime.ParseExact(config["Phases:Phase0Start"], "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-            this.Phase1Start = DateTime.ParseExact(config["Phases:Phase1Start"], "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-            this.Phase2Start = DateTime.ParseExact(config["Phases:Phase2Start"], "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-            this.Phase3Start = DateTime.ParseExact(config["Phases:Phase3Start"], "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-            this.Phase3End = DateTime.ParseExact(config["Phases:Phase3End"], "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            this.Phase0Start = DateTime.ParseExact(config["Phases:Phase0Start"], DATES_FORMAT, CultureInfo.InvariantCulture);
+            this.Phase1Start = DateTime.ParseExact(config["Phases:Phase1Start"], DATES_FORMAT, CultureInfo.InvariantCulture);
+            this.Phase2Start = DateTime.ParseExact(config["Phases:Phase2Start"], DATES_FORMAT, CultureInfo.InvariantCulture);
+            this.Phase3Start = DateTime.ParseExact(config["Phases:Phase3Start"], DATES_FORMAT, CultureInfo.InvariantCulture);
+            this.Phase3End = DateTime.ParseExact(config["Phases:Phase3End"], DATES_FORMAT, CultureInfo.InvariantCulture);
             this.Phase4End = this.Phase3End.AddDays(1);
         }
 
@@ -64,7 +65,7 @@ namespace RoomReservation.Web.Api
             string appsettingsContent = System.IO.File.ReadAllText(APPSETTINGS_PATH);
             dynamic appSettingsJson = JsonConvert.DeserializeObject(appsettingsContent);
 
-            appSettingsJson.Phases.Phase0Start = now.ToString("yyyy-MM-ddTHH:mm:ss");
+            appSettingsJson.Phases.Phase0Start = now.ToString(DATES_FORMAT);
             appSettingsJson.Phases.Phase1Start = model.Phase1Start;
             appSettingsJson.Phases.Phase2Start = model.Phase2Start;
             appSettingsJson.Phases.Phase3Start = model.Phase3Start;
