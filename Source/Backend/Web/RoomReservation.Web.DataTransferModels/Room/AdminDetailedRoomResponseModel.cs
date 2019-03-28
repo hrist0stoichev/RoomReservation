@@ -10,12 +10,6 @@ namespace RoomReservation.Web.DataTransferModels.Room
 
     public class AdminDetailedRoomResponseModel : ListedRoomResponseModel, IHaveCustomMappings
     {
-        public bool IsRA { get; set; }
-
-        public bool IsMale { get; set; }
-
-        public bool IsReserved { get; set; }
-
         public string Comments { get; set; }
 
         public AdminDetailedRoomResponseModel ApartmentRoom { get; set; }
