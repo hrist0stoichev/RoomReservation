@@ -10,6 +10,8 @@ import IsAuthenticated from '../containers/IsAuthenticated';
 import RoomsView from '../routes/RoomsView';
 import SingleStudent from '../containers/SingleStudent';
 import RoomsSingle from '../containers/RoomsSingle';
+import Apartments from '../containers/Apartments';
+import CreateInvitation from '../containers/CreateInvitation';
 
 const authentication = (props, component) => {
   if (props.isAuthenticated) {
@@ -49,6 +51,8 @@ const Router = (props) => (
       <Route path='/students/bulk-add' exact render={() => authentication(props, <StudentsBulkAdd />)} />
       <Route path='/single-student' exact render={() => authentication(props, <SingleStudent />)} />
       <Route path='/campaign' exact render={() => authentication(props, <Campaign />)} />
+      <Route path='/apartments' exact render={() => authentication(props, <Apartments />)} />
+      <Route path='/invitations/create' exact render={() => authentication(props, <CreateInvitation />)} />
     </div>
   </BrowserRouter>
 );

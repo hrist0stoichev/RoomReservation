@@ -1,9 +1,10 @@
-import { STUDENTS_LOADING, STUDENTS_SUCCESS, STUDENTS_BULK_ADD_DONE, CREATE_STUDENT_DONE } from '../actions/actionTypes';
+import { STUDENTS_LOADING, STUDENTS_SUCCESS, STUDENTS_BULK_ADD_DONE, CREATE_STUDENT_DONE, ROOM_CONFIRMED } from '../actions/actionTypes';
 
 const initialState = {
   students: [],
   isLoading: false,
   bulkAddIsDone: false,
+  roomConfirmed: false,
 };
 
 const auth = (state = initialState, action) => {
@@ -29,6 +30,11 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         students,
+      }
+    case ROOM_CONFIRMED:
+      return {
+        ...state,
+        roomConfirmed: true,
       }
     default:
       return state;

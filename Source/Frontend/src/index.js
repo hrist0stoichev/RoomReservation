@@ -8,6 +8,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import 'rc-datetime-picker/dist/picker.css';
 import { authenticateWithToken } from './actions/auth';
+import './index.scss';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 

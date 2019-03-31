@@ -16,6 +16,8 @@ import {
 import { Link } from 'react-router-dom';
 import './Header.scss';
 import IsAuthenticated from '../containers/IsAuthenticated';
+import RoomConfirmation from './RoomConfirmation';
+import Invitations from '../containers/Invitations';
 
 class Header extends React.Component {
   constructor(props) {
@@ -40,6 +42,22 @@ class Header extends React.Component {
       <IsAuthenticated>
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret>
+            Invitations
+          </DropdownToggle>
+          <DropdownMenu right style={{ minWidth: '21rem' }}>
+            <Invitations />
+          </DropdownMenu>
+        </UncontrolledDropdown>
+        <UncontrolledDropdown nav inNavbar>
+          <DropdownToggle nav caret>
+            Room Confirmation
+          </DropdownToggle>
+          <DropdownMenu right style={{ minWidth: '21rem' }}>
+            <RoomConfirmation roomConfirmed={this.props.roomConfirmed} confirmRoom={this.props.confirmRoom} />
+          </DropdownMenu>
+        </UncontrolledDropdown>
+        <UncontrolledDropdown nav inNavbar>
+          <DropdownToggle nav caret>
             Settings
           </DropdownToggle>
           <DropdownMenu right>
@@ -51,6 +69,7 @@ class Header extends React.Component {
       </IsAuthenticated>
     );
   }
+  
   render() {
     return (
       <div className="w-100 bg-dark">

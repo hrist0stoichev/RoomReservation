@@ -1,4 +1,4 @@
-import { STUDENTS_BULK_ADD_DONE, STUDENTS_LOADING, STUDENTS_SUCCESS, CREATE_STUDENT_DONE } from './actionTypes';
+import { STUDENTS_BULK_ADD_DONE, STUDENTS_LOADING, STUDENTS_SUCCESS, ROOM_CONFIRMED } from './actionTypes';
 import { showError } from './alert';
 import makeActionCreator from './makeActionCreator';
 import config from '../config.js';
@@ -73,7 +73,27 @@ export const createStudent = (student) => {
 };
 */
 
+export const confirmRoom = () => {
+  return (dispatch, getState) => {
+    fetch(`${config.endpoint}/rooms/confirm`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getState().auth.accessToken}`,
+      }
+    })
+      .then(() => {
+        dispatch(roomConfirmed());
+      })
+      .catch((error)=> {
+        dispatch(showError('The system could not confirm your room at this time.. Please, try again later.'));
+        console.error(error);
+      });
+  };
+};
+
 export const studentsLoading = makeActionCreator(STUDENTS_LOADING, 'isLoading');
 export const studentsSuccess = makeActionCreator(STUDENTS_SUCCESS, 'students');
 export const studentsBulkAddDone = makeActionCreator(STUDENTS_BULK_ADD_DONE, 'isDone');
+export const roomConfirmed = makeActionCreator(ROOM_CONFIRMED);
 //export const createStudentDone = makeActionCreator(CREATE_STUDENT_DONE, 'student');

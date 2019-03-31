@@ -73,7 +73,7 @@ export class SingleStudent extends Component {
                 </ListGroupItem>
                 <ListGroupItem>
                   <ListGroupItemHeading>Comments</ListGroupItemHeading>
-                  <ListGroupItemText>{this.state.student.comments}</ListGroupItemText>
+                  <ListGroupItemText>{this.state.student.Comments}</ListGroupItemText>
                 </ListGroupItem>
               </ListGroup>
             </Col>
