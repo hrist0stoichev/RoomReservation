@@ -18,10 +18,11 @@ namespace RoomReservation.Web.Api.Controllers
 {
     public class AccountsController : BaseController
     {
-        public AccountsController(RoomReservationDbContext context, IConfiguration config, LdapAuthenticationService ldapAuthenticationService) : base(context)
+        public AccountsController(RoomReservationDbContext context, IConfiguration config, LdapAuthenticationService ldapAuthenticationService, PhasesProvider phasesProvider) : base(context)
         {
             this.Config = config;
             this.LdapAuthenticationService = ldapAuthenticationService;
+            this.PhasesProvider = phasesProvider;
         }
 
         private LdapAuthenticationService LdapAuthenticationService { get; }
@@ -35,7 +36,7 @@ namespace RoomReservation.Web.Api.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> Token([FromForm]LoginBindingModel model)
         {
-            var ldapUser = this.LdapAuthenticationService.Login(model.UserName, model.Password);
+            var ldapUser = this.LdapAuthenticationService.Login(model.UserName.Split('@')[0], model.Password);
 
             if (ldapUser == null)
             {
