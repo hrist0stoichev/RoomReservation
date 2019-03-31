@@ -6,40 +6,76 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Novell.Directory.Ldap;
 using RoomReservation.Data;
+using RoomReservation.Web.Api.Ldap;
 using RoomReservation.Web.DataTransferModels.Student;
 
 namespace RoomReservation.Web.Api.Controllers
 {
     public class AccountsController : BaseController
     {
-        public AccountsController(RoomReservationDbContext context, IConfiguration config) : base(context)
-        { 
+        public AccountsController(RoomReservationDbContext context, IConfiguration config, LdapAuthenticationService ldapAuthenticationService) : base(context)
+        {
             this.Config = config;
+            this.LdapAuthenticationService = ldapAuthenticationService;
         }
 
+        private LdapAuthenticationService LdapAuthenticationService { get; }
+
         private IConfiguration Config { get; }
+
+        private PhasesProvider PhasesProvider { get; }
 
         [AllowAnonymous]
         [HttpPost("/api/token")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IActionResult Token([FromForm]LoginBindingModel model)
+        public async Task<IActionResult> Token([FromForm]LoginBindingModel model)
         {
-            var userClaims = GetUserClaims(model.Role);
-            var tokenString = this.BuildToken(userClaims);
+            var ldapUser = this.LdapAuthenticationService.Login(model.UserName, model.Password);
 
-            var response = new
+            if (ldapUser == null)
             {
-                access_token = tokenString,
-                userRole = model.Role,
-                phase = (int) model.Phase,
-                userName = model.UserName,
-                expires = DateTime.Now.AddHours(8)
-            };
+                return this.BadRequest(new { error_message = "Username or password incorrect!" });
+            }
 
-            return Ok(response);
+            if (ldapUser.Role == "Admin")
+            {
+                return this.Ok(new
+                {
+                    access_token = BuildToken(GetUserClaims("Admin")),
+                    userRole = "Admin",
+                    phase = PhasesProvider.CurrentPhase,
+                    userName = ldapUser.DisplayName,
+                    expires = DateTime.Now.AddHours(8)
+                });
+            }
+            else
+            {
+                var student = await this.Context.Students
+                    .FirstOrDefaultAsync(s => s.Id == ldapUser.Description);
+
+                if (student == null || !student.IsOnCampus)
+                {
+                    return this.Unauthorized();
+                }
+
+                return this.Ok(new
+                {
+                    access_token = BuildToken(GetUserClaims("Student", student.Id)),
+                    userRole = "Student",
+                    phase = PhasesProvider.CurrentPhase,
+                    userName = ldapUser.DisplayName,
+                    expires = DateTime.Now.AddHours(8),
+                    registration_time = student.RegistrationTime,
+                    studentId = student.Id,
+                    currentRoomNumber = student.CurrentRoomNumber,
+                    previousRoomNumber = student.PreviousRoomNumber
+                });
+            }
         }
 
         private string BuildToken(IEnumerable<Claim> claims)
@@ -57,13 +93,19 @@ namespace RoomReservation.Web.Api.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private IEnumerable<Claim> GetUserClaims(string userRole)
+        private IEnumerable<Claim> GetUserClaims(string userRole, string studentId = null)
         {
-            return new List<Claim>() 
-            { 
-                new Claim(ClaimTypes.Role, userRole),
-                new Claim(ClaimTypes.NameIdentifier, "100136822")
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Role, userRole)
             };
+
+            if (studentId != null)
+            {
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, studentId));
+            }
+
+            return claims;
         }
     }
 }
