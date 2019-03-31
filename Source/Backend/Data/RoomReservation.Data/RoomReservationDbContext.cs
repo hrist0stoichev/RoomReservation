@@ -39,7 +39,7 @@ namespace RoomReservation.Data
                     .WithOne()
                     .HasForeignKey<Room>(r => r.ApartmentRoomNumber)
                     .IsRequired(false)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             builder.Entity<Invitation>(invitation =>
@@ -60,7 +60,7 @@ namespace RoomReservation.Data
                     .WithMany(r => r.Invitations)
                     .HasForeignKey(r => r.RoomNumber)
                     .IsRequired(true)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 invitation.HasIndex(i => new { i.FromStudentId, i.ToStudentId })
                     .IsUnique(true);

@@ -87,8 +87,32 @@ namespace RoomReservation.Web.Api.Controllers
             }
         }
 
+        [HttpDelete("{number}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteRoom(string number)
+        {
+            var roomToDelete = await this.Context.Rooms
+                .Include(r => r.CurrentResidents)
+                .FirstOrDefaultAsync(r => r.Number == number);
+
+            if (roomToDelete == null)
+            {
+                return this.NotFound();
+            }
+
+            if (roomToDelete.CurrentResidents.Count != 0)
+            {
+                return this.BadRequest(new { error_message = "First remove the residents!" });
+            }
+
+            this.Context.Remove(roomToDelete);
+            await this.Context.SaveChangesAsync();
+
+            return this.Ok();
+        }
+
         [HttpPut("confirm")]
-        [Authorize]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> ConfirmRoom()
         {
             var currentStudent = await base.GetStudentAsync(this.CurrentUserId);
@@ -118,7 +142,7 @@ namespace RoomReservation.Web.Api.Controllers
         }
 
         [HttpPost("{number}/join")]
-        [Authorize]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> JoinRoom(string number)
         {
             var room = await this.Context.Rooms
@@ -220,7 +244,30 @@ namespace RoomReservation.Web.Api.Controllers
             return this.Ok(Mapper.Map<AdminDetailedRoomResponseModel>(roomToModify));
         }
 
-        [HttpPost("/apartment")]
+        [HttpGet("apartments")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetApartments()
+        {
+            var apartments = await this.Context.Rooms
+                .Where(r => r.ApartmentRoomNumber != null)
+                .OrderBy(r => r.Number)
+                .ProjectTo<ApartmentResponseModel>()
+                .ToListAsync();
+
+            var apartmentsDict = new Dictionary<(string, string), ApartmentResponseModel>();
+
+            foreach (var apartment in apartments)
+            {
+                if (!apartmentsDict.ContainsKey((apartment.ApartmentRoomNumber, apartment.Number)))
+                {
+                    apartmentsDict.Add((apartment.Number, apartment.ApartmentRoomNumber), apartment);
+                }
+            }
+
+            return this.Ok(apartmentsDict.Values.ToList());
+        }
+
+        [HttpPost("apartments")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeApartment(ApartmentRequestModel model)
         {
@@ -237,6 +284,26 @@ namespace RoomReservation.Web.Api.Controllers
 
             await this.Context.SaveChangesAsync();
 
+            return this.Ok();
+        }
+
+        [HttpPut("apartments/{number}/detach")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DetachApartment(string number)
+        {
+            var room = await this.Context.Rooms
+                .Include(r => r.ApartmentRoom)
+                .FirstOrDefaultAsync(r => r.Number == number);
+
+            if (room == null)
+            {
+                return this.NotFound();
+            }
+
+            room.ApartmentRoom.ApartmentRoomNumber = null;
+            room.ApartmentRoomNumber = null;
+            
+            await this.Context.SaveChangesAsync();
             return this.Ok();
         }
 
