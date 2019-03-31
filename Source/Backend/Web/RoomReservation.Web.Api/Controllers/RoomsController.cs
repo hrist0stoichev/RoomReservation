@@ -93,6 +93,8 @@ namespace RoomReservation.Web.Api.Controllers
         {
             var roomToDelete = await this.Context.Rooms
                 .Include(r => r.CurrentResidents)
+                .Include(r => r.Invitations)
+                .Include(r => r.ApartmentRoom)
                 .FirstOrDefaultAsync(r => r.Number == number);
 
             if (roomToDelete == null)
@@ -102,10 +104,17 @@ namespace RoomReservation.Web.Api.Controllers
 
             if (roomToDelete.CurrentResidents.Count != 0)
             {
-                return this.BadRequest(new { error_message = "First remove the residents!" });
+                return this.BadRequest(new { error_message = "You cannot delete a room that has residents in it!" });
             }
 
-            this.Context.Remove(roomToDelete);
+            if (roomToDelete.ApartmentRoom != null)
+            {
+                roomToDelete.ApartmentRoom.ApartmentRoomNumber = null;
+            }
+
+            this.Context.Invitations.RemoveRange(roomToDelete.Invitations);
+            this.Context.Rooms.Remove(roomToDelete);
+            
             await this.Context.SaveChangesAsync();
 
             return this.Ok();
@@ -328,11 +337,10 @@ namespace RoomReservation.Web.Api.Controllers
         {
             return student.CurrentRoomNumber == null // check if the student doesn't have a room
             && student.IsOnCampus // check if the student is on campus
-            && student.RegistrationTime < DateTime.Now // check if the registration time of the student has already come
+            && (student.RegistrationTime < DateTime.Now || student.IsRA) // check if the registration time of the student has already come
             && (room.IsMale == null || student.IsMale == room.IsMale) // check if the room is the same sex as the student
             && room.Capacity > room.CurrentResidents.Count // check if the room is not already full
-            && !room.IsReserved // check if the room is not reserved
-            && (PhasesProvider.CurrentPhase > 2 || student.IsRA); // Check if it is the registration phase or the use is RA
+            && !room.IsReserved; // check if the room is not reserved
         }
     }
 }

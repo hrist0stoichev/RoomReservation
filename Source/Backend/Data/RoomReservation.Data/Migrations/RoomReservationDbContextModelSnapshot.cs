@@ -129,7 +129,7 @@ namespace RoomReservation.Data.Migrations
                     b.HasOne("RoomReservation.Data.Models.Room", "Room")
                         .WithMany("Invitations")
                         .HasForeignKey("RoomNumber")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RoomReservation.Data.Models.Student", "ToStudent")
                         .WithMany("InvitationsReceived")
@@ -142,7 +142,7 @@ namespace RoomReservation.Data.Migrations
                     b.HasOne("RoomReservation.Data.Models.Room", "ApartmentRoom")
                         .WithOne()
                         .HasForeignKey("RoomReservation.Data.Models.Room", "ApartmentRoomNumber")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("RoomReservation.Data.Models.Student", b =>
