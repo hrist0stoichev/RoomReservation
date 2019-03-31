@@ -77,7 +77,7 @@ namespace RoomReservation.Web.Api
                 .AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
+
             services.AddSingleton<PhasesProvider>();
         }
 
@@ -95,6 +95,8 @@ namespace RoomReservation.Web.Api
                 app.UseHsts();
             }
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseAuthentication();
