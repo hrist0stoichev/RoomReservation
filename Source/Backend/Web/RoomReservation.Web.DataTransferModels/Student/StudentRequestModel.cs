@@ -10,13 +10,7 @@ namespace RoomReservation.Web.DataTransferModels.Student
         public bool? IsRA { get; set; }
 
         [Required]
-        public bool? IsBanned { get; set; }
-
-        [Required]
         public bool? IsOnCampus { get; set; }
-
-        [Required]
-        public bool? IsDepositPaid { get; set; }
 
         [MaxLength(500)]
         public string Comments { get; set; }

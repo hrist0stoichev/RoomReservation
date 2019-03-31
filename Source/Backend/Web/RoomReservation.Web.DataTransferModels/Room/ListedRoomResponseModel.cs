@@ -14,6 +14,12 @@ namespace RoomReservation.Web.DataTransferModels.Room
 
         public int ResidentsCount { get; set; }
 
+        public bool? IsMale { get; set; }
+
+        public bool IsRA { get; set; }
+
+        public bool IsReserved { get; set; }
+
         public virtual void CreateMappings(Profile configuration)
         {
             configuration.CreateMap<Room, ListedRoomResponseModel>()

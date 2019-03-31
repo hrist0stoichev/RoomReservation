@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using RoomReservation.Common.AutoMapper;
 using RoomReservation.Data;
+using RoomReservation.Web.Api.Ldap;
 
 namespace RoomReservation.Web.Api
 {
@@ -77,7 +78,9 @@ namespace RoomReservation.Web.Api
                 .AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
+
+            services.Configure<LdapConfig>(Configuration.GetSection("Ldap"));
+            services.AddSingleton<LdapAuthenticationService>();
             services.AddSingleton<PhasesProvider>();
         }
 
@@ -95,6 +98,8 @@ namespace RoomReservation.Web.Api
                 app.UseHsts();
             }
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseAuthentication();

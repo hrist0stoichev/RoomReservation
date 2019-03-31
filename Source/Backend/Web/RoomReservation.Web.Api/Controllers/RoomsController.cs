@@ -87,8 +87,41 @@ namespace RoomReservation.Web.Api.Controllers
             }
         }
 
+        [HttpDelete("{number}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteRoom(string number)
+        {
+            var roomToDelete = await this.Context.Rooms
+                .Include(r => r.CurrentResidents)
+                .Include(r => r.Invitations)
+                .Include(r => r.ApartmentRoom)
+                .FirstOrDefaultAsync(r => r.Number == number);
+
+            if (roomToDelete == null)
+            {
+                return this.NotFound();
+            }
+
+            if (roomToDelete.CurrentResidents.Count != 0)
+            {
+                return this.BadRequest(new { error_message = "You cannot delete a room that has residents in it!" });
+            }
+
+            if (roomToDelete.ApartmentRoom != null)
+            {
+                roomToDelete.ApartmentRoom.ApartmentRoomNumber = null;
+            }
+
+            this.Context.Invitations.RemoveRange(roomToDelete.Invitations);
+            this.Context.Rooms.Remove(roomToDelete);
+            
+            await this.Context.SaveChangesAsync();
+
+            return this.Ok();
+        }
+
         [HttpPut("confirm")]
-        [Authorize]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> ConfirmRoom()
         {
             var currentStudent = await base.GetStudentAsync(this.CurrentUserId);
@@ -117,111 +150,8 @@ namespace RoomReservation.Web.Api.Controllers
             return this.Ok();
         }
 
-        [HttpPut("invite/{id}")]
-        [Authorize]
-        public async Task<IActionResult> Invite(string id)
-        {
-            var invitee = await this.Context.Students
-                .FirstOrDefaultAsync(s => s.Id == id);
-
-            if (invitee == null)
-            {
-                return this.NotFound();
-            }
-
-            var inviter = await this.Context.Students
-                .Include(s => s.CurrentRoom)
-                    .ThenInclude(r => r.CurrentResidents)
-                .Include(s => s.CurrentRoom)
-                    .ThenInclude(r => r.ApartmentRoom)
-                        .ThenInclude(ar => ar.CurrentResidents)
-                .FirstOrDefaultAsync(s => s.Id == this.CurrentUserId);
-
-            if (!IsEligibleToInvite(inviter, invitee, inviter.CurrentRoom))
-            {
-                return this.Unauthorized();
-            }
-
-            var invitation = new Invitation()
-            {
-                FromStudentId = inviter.Id,
-                ToStudentId = invitee.Id,
-                RoomNumber = inviter.CurrentRoomNumber
-            };
-
-            await this.Context.Invitations.AddAsync(invitation);
-            await this.Context.SaveChangesAsync();
-
-            return this.Ok();
-        }
-
-
-        [HttpPut("{number}/accept")]
-        [Authorize]
-        public async Task<IActionResult> AcceptInvitation(string number)
-        {
-            var room = await this.Context.Rooms
-                .Include(r => r.Invitations)
-                .Include(r => r.CurrentResidents)
-                .Include(r => r.ApartmentRoom)
-                    .ThenInclude(ar => ar.CurrentResidents)
-                .Include(r => r.ApartmentRoom)
-                    .ThenInclude(ar => ar.Invitations)
-                .FirstOrDefaultAsync(r => r.Number == number);
-
-            if (room == null)
-            {
-                return this.NotFound();
-            }
-
-            var userIsInvitedForTheRoom = room.Invitations
-                .Any(i => i.ToStudentId == this.CurrentUserId);
-
-            if (!userIsInvitedForTheRoom)
-            {
-                return this.BadRequest(new { error_message = "You are not invited for this room" });
-            }
-
-            var currentStudent = await this.Context.Students
-                .Include(s => s.InvitationsReceived)
-                .FirstOrDefaultAsync(s => s.Id == this.CurrentUserId);
-
-            if (!IsEligibleToAcceptInvitation(currentStudent, room))
-            {
-                return this.Unauthorized();
-            }
-
-            // Add the person to the current room if it is not full, otherwise add it to the other room
-            if (room.Capacity < room.CurrentResidents.Count)
-            {
-                room.CurrentResidents.Add(currentStudent);
-            }
-            else
-            {
-                room.ApartmentRoom.CurrentResidents.Add(currentStudent);
-            }
-
-            // Check if the apartment is full and delete all invitations
-            if (room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) == room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0))
-            {
-                this.Context.Invitations.RemoveRange(room.Invitations);
-
-                if (room.ApartmentRoom != null)
-                {
-                    this.Context.Invitations.RemoveRange(room.ApartmentRoom.Invitations);
-                }
-            }
-
-            this.Context.Invitations.RemoveRange(currentStudent.InvitationsReceived);
-            currentStudent.RegistrationTime = null;
-
-            await this.Context.SaveChangesAsync();
-
-            return this.Ok();
-        }
-
         [HttpPost("{number}/join")]
-        [Authorize]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> JoinRoom(string number)
         {
             var room = await this.Context.Rooms
@@ -323,7 +253,30 @@ namespace RoomReservation.Web.Api.Controllers
             return this.Ok(Mapper.Map<AdminDetailedRoomResponseModel>(roomToModify));
         }
 
-        [HttpPost("/apartment")]
+        [HttpGet("apartments")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetApartments()
+        {
+            var apartments = await this.Context.Rooms
+                .Where(r => r.ApartmentRoomNumber != null)
+                .OrderBy(r => r.Number)
+                .ProjectTo<ApartmentResponseModel>()
+                .ToListAsync();
+
+            var apartmentsDict = new Dictionary<(string, string), ApartmentResponseModel>();
+
+            foreach (var apartment in apartments)
+            {
+                if (!apartmentsDict.ContainsKey((apartment.ApartmentRoomNumber, apartment.Number)))
+                {
+                    apartmentsDict.Add((apartment.Number, apartment.ApartmentRoomNumber), apartment);
+                }
+            }
+
+            return this.Ok(apartmentsDict.Values.ToList());
+        }
+
+        [HttpPost("apartments")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeApartment(ApartmentRequestModel model)
         {
@@ -340,6 +293,26 @@ namespace RoomReservation.Web.Api.Controllers
 
             await this.Context.SaveChangesAsync();
 
+            return this.Ok();
+        }
+
+        [HttpPut("apartments/{number}/detach")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DetachApartment(string number)
+        {
+            var room = await this.Context.Rooms
+                .Include(r => r.ApartmentRoom)
+                .FirstOrDefaultAsync(r => r.Number == number);
+
+            if (room == null)
+            {
+                return this.NotFound();
+            }
+
+            room.ApartmentRoom.ApartmentRoomNumber = null;
+            room.ApartmentRoomNumber = null;
+            
+            await this.Context.SaveChangesAsync();
             return this.Ok();
         }
 
@@ -360,32 +333,14 @@ namespace RoomReservation.Web.Api.Controllers
             && room.Capacity > room.CurrentResidents.Count;
         }
 
-        private bool IsEligibleToInvite(Student inviter, Student invitee, Room room)
-        {
-            return inviter.CurrentRoomNumber != null
-            && invitee.CurrentRoomNumber == null
-            && inviter.IsMale == invitee.IsMale
-            && invitee.IsOnCampus
-            && PhasesProvider.CurrentPhase > 1
-            && room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) > room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0);
-        }
-
-        private bool IsEligibleToAcceptInvitation(Student student, Room room)
-        {
-            return student.CurrentRoomNumber == null
-            && student.IsOnCampus
-            && room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) > room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0);
-        }
-
         private bool IsEligibleForRegistration(Student student, Room room)
         {
             return student.CurrentRoomNumber == null // check if the student doesn't have a room
             && student.IsOnCampus // check if the student is on campus
-            && student.RegistrationTime < DateTime.Now // check if the registration time of the student has already come
+            && (student.RegistrationTime < DateTime.Now || student.IsRA) // check if the registration time of the student has already come
             && (room.IsMale == null || student.IsMale == room.IsMale) // check if the room is the same sex as the student
             && room.Capacity > room.CurrentResidents.Count // check if the room is not already full
-            && !room.IsReserved // check if the room is not reserved
-            && (PhasesProvider.CurrentPhase > 2 || student.IsRA); // Check if it is the registration phase or the use is RA
+            && !room.IsReserved; // check if the room is not reserved
         }
     }
 }

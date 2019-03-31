@@ -6,13 +6,18 @@ namespace RoomReservation.Web.DataTransferModels.Invitation
 
     public class StudentInvitationResponseModel : IHaveCustomMappings
     {
+        public int Id { get; set; }
+
         public string FromStudentName { get; set; }
+
+        public string ToStudentName { get; set; }
 
         public string RoomNumber { get; set; }
 
-        public void CreateMappings(Profile configuration)
+        public virtual void CreateMappings(Profile configuration)
         {
             configuration.CreateMap<Invitation, StudentInvitationResponseModel>()
+                .ForMember(airm => airm.ToStudentName, opts => opts.MapFrom(i => i.ToStudent.FirstName + " " + i.ToStudent.LastName))
                 .ForMember(airm => airm.FromStudentName, opts => opts.MapFrom(i => i.FromStudent.FirstName + " " + i.FromStudent.LastName));
         }
     }

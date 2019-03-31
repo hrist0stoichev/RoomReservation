@@ -101,5 +101,62 @@ namespace RoomReservation.Web.Api.Controllers
 
             return this.Ok();
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(string id, StudentRequestModel model)
+        {
+            var student = await this.Context.Students
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (student == null)
+            {
+                return this.NotFound();
+            }
+
+            var newIdAlreadyExists = await this.Context.Students
+                .AnyAsync(s => s.Id == model.Id);
+
+            if (newIdAlreadyExists)
+            {
+                return this.BadRequest(new { error_message = "A student with this Id already exists!" });
+            }
+
+            student.Id = model.Id;
+            student.FirstName = model.FirstName;
+            student.LastName = model.LastName;
+            student.CreditHours = (byte)model.CreditHours;
+            student.Email = model.Email;
+            student.IsMale = (bool)model.IsMale;
+            student.IsRA = (bool)model.IsRA;
+            student.IsOnCampus = (bool)model.IsOnCampus;
+            student.Comments = model.Comments;
+
+            await this.Context.SaveChangesAsync();
+            return this.Ok(Mapper.Map<AdminDetailedStudentResponseModel>(student));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var student = await this.Context.Students
+                .Include(s => s.InvitationsSent)
+                .Include(s => s.InvitationsReceived)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (student == null)
+            {
+                return this.NotFound();
+            }
+
+            this.Context.Invitations.RemoveRange(student.InvitationsSent);
+            this.Context.Invitations.RemoveRange(student.InvitationsReceived);
+            this.Context.Students.Remove(student);
+
+            await this.Context.SaveChangesAsync();
+
+            return this.Ok();
+        }
     }
 }
