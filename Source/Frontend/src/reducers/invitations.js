@@ -1,16 +1,24 @@
-import { FETCH_INVITATIONS_SUCCESS, INVITATIONS_LOADING } from '../actions/actionTypes';
+import { FETCH_INVITATIONS_STUDENT_SUCCESS, FETCH_INVITATIONS_ADMIN_SUCCESS, INVITATIONS_LOADING } from '../actions/actionTypes';
 
 const initialState = {
   invitations: [],
+  fromInvitations: [],
+  toInvitations: [],
   isLoading: false,
 };
 
 const invitations = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_INVITATIONS_SUCCESS:
+    case FETCH_INVITATIONS_STUDENT_SUCCESS:
       return {
         ...state,
-        rooms: action.invitations,
+        invitations: action.invitations,
+      };
+    case FETCH_INVITATIONS_ADMIN_SUCCESS:
+      return {
+        ...state,
+        fromInvitations: action.fromInvitations,
+        toInvitations: action.toInvitations
       };
     case INVITATIONS_LOADING:
       return {

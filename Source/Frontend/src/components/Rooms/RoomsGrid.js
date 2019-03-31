@@ -1,7 +1,8 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { Redirect } from 'react-router-dom';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, ButtonGroup } from 'reactstrap';
+import config from '../../config';
 
 class RoomsGrid extends React.Component {
   constructor(props) {
@@ -13,6 +14,8 @@ class RoomsGrid extends React.Component {
     };
 
     this.handleDetails = this.handleDetails.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.joinRoom = this.joinRoom.bind(this);
 
     this.columnDefs = [
       { headerName: "Number", field: "Number", sortable: true, filter: true, width: 115 },
@@ -25,7 +28,11 @@ class RoomsGrid extends React.Component {
       },
       { headerName: "Sex", field: "IsMale", sortable: true, filter: true, width: 95,
         cellRendererFramework: params => {
-          return params.data.IsMale ? 'Male' : 'Female';
+          if (params.data.isMale !== null) {
+            return params.data.IsMale ? 'Male' : 'Female';
+          } else {
+            return '';
+          }
         }
       },
       { headerName: "Reserved", field: "IsReserved", sortable: true, filter: true, width: 125,
@@ -34,10 +41,15 @@ class RoomsGrid extends React.Component {
         }
       },
       { headerName: "Apartment Room Number", field: "ApartmentRoomNumber", sortable: true, filter: true },
-      { headerName: "Comments", field: "Comments", sortable: true, filter: true, width: 330},
       { headerName: 'Operations', pinned: 'right',
         cellRendererFramework: params => {
-            return <Button size="sm" onClick={() => this.handleDetails(params.data.Number)}>Details</Button>;
+            return (
+              <ButtonGroup size="sm">
+                <Button onClick={() => this.handleDetails(params.data.Number)}>Details</Button>
+                <Button onClick={() => this.handleDelete(params.data.Number)}>Delete</Button>
+                <Button onClick={() => this.joinRoom(params.data.Number)}>Join</Button>
+              </ButtonGroup>
+            );
         }
       }
     ];
@@ -48,6 +60,36 @@ class RoomsGrid extends React.Component {
       redirect: true,
       redirectTo: `/rooms/single?roomNumber=${roomNumber}`,
     });
+  }
+
+  handleDelete(number) {
+    fetch(`${config.endpoint}/rooms/${number}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.props.accessToken}`,
+      },
+    })
+      .then(() => this.props.fetchRooms())
+      .catch((error) => {
+        this.props.showError('Could not delete room.');
+        console.log(error);
+      });
+  }
+
+  joinRoom(number) {
+    fetch(`${config.endpoint}/rooms/${number}/join`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.props.accessToken}`,
+      },
+    })
+      .then(() => this.props.fetchRooms())
+      .catch((error) => {
+        this.props.showError('Could not join room.');
+        console.log(error);
+      });
   }
 
   componentWillMount() {

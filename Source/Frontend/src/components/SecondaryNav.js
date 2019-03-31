@@ -7,10 +7,10 @@ const SecondaryNav = (props) => {
   return (
     <div id="secondary-nav" className="border-bottom">
       <Row>
-        <Col md="3">
+        <Col md="6">
           <p>{props.title}</p>
         </Col>
-        <Col md="9" className="text-right">
+        <Col md="6" className="text-right">
           <ul>
             {props.links.map((link, index) => <Link to={link.href}><li key={index}>{link.title}</li></Link>)}
           </ul>

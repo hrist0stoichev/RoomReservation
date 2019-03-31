@@ -10,8 +10,12 @@ class Rooms extends React.Component {
           title="Rooms"
           secondaryNav={[
             {
-              title: 'Apartments',
-              href: '/apartments'
+              title: 'All Rooms',
+              href: '/rooms/'
+            },
+            {
+              title: 'Create Room',
+              href: '/rooms/create'
             }
           ]}
         >

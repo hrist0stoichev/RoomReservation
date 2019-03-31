@@ -14,12 +14,20 @@ class Students extends React.Component {
           title="Students"
           secondaryNav={[
             {
+              title: 'All Students',
+              href: '/students/'
+            },
+            {
+              title: 'Create Student',
+              href: '/students/create'
+            },
+            {
               title: 'Bulk Add Students',
               href: '/students/bulk-add'
             }
           ]}
         >
-          <StudentsGrid students={this.props.students} isLoading={this.props.isLoading} />
+          <StudentsGrid students={this.props.students} isLoading={this.props.isLoading} accessToken={this.props.accessToken} fetchStudents={this.props.fetchStudents} />
         </MainLayout>
       </div>
     );

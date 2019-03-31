@@ -3,12 +3,23 @@ import RoomsGrid from '../containers/RoomsGrid';
 import MainLayout from '../components/MainLayout';
 
 const RoomsView = (props) => {
-  const url = new URL(window.location.href);
-  const sk = url.searchParams.get('sk');
-  const floor = url.searchParams.get('floor');
+  const url = window.location.href.split('=');
+  const sk = parseInt(url[1]);
+  const floor = parseInt(url[2]);
 
   return (
-    <MainLayout title="Rooms" secondaryNav={[]}>
+    <MainLayout
+      title={`Rooms | Skaptopara ${sk} Floor ${floor}`}
+      secondaryNav={[
+        {
+          title: 'All Rooms',
+          href: '/rooms/'
+        },
+        {
+          title: 'Create Room',
+          href: '/rooms/create'
+        }
+      ]}>
         <RoomsGrid sk={sk} floor={floor} />
     </MainLayout>
   );

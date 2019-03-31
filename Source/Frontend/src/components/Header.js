@@ -90,6 +90,12 @@ class Header extends React.Component {
                     <NavItem>
                       <Link to="/rooms">Rooms</Link>
                     </NavItem>
+                    <NavItem>
+                      <Link to="/apartments">Apartments</Link>
+                    </NavItem>
+                    <NavItem>
+                      <Link to="/invitations">Invitations</Link>
+                    </NavItem>
                     {this.renderLoginDropdown()}
                   </Nav>
                 </Collapse>

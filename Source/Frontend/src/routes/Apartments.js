@@ -1,24 +1,33 @@
 import React from 'react';
 import MainLayout from '../components/MainLayout';
+import ApartmentsGrid from '../components/Apartments/ApartmentsGrid';
 
-class Rooms extends React.Component {
+class Apartments extends React.Component {
+  componentWillMount() {
+    this.props.fetchApartments();
+  }
+
   render() {
     return (
-      <div id="rooms">
+      <div id="apartments">
         <MainLayout
-          title="Rooms"
+          title="Apartments"
           secondaryNav={[
             {
-              title: 'Apartments',
-              href: '/apartments'
+              title: 'All Apartments',
+              href: '/apartments/'
+            },
+            {
+              title: 'Create Apartment',
+              href: '/apartments/create'
             }
           ]}
         >
-          Apartments
+          <ApartmentsGrid apartments={this.props.apartments} />
         </MainLayout>
       </div>
     );
   }
 }
 
-export default Rooms;
+export default Apartments;

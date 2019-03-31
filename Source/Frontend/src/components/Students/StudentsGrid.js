@@ -1,8 +1,9 @@
 import React from 'react';
 import Loader from '../../components/Loader';
 import { AgGridReact } from 'ag-grid-react';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, ButtonGroup } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
+import config from '../../config';
 
 class StudentsGrid extends React.Component {
   constructor(props) {
@@ -28,7 +29,11 @@ class StudentsGrid extends React.Component {
       { headerName: "Email", field: "Email", sortable: true, filter: true },
       { headerName: "Sex", field: "IsMale", sortable: true, filter: true, width: 95,
         cellRendererFramework: params => {
-          return params.data.IsMale ? 'Male' : 'Female';
+          if (params.data.isMale !== null) {
+            return params.data.IsMale ? 'Male' : 'Female';
+          } else {
+            return '';
+          }
         }
       },
       { headerName: "Room Number", field: "CurrentRoomNumber", sortable: true, filter: true, width: 155 },
@@ -58,14 +63,22 @@ class StudentsGrid extends React.Component {
         }
       },
       { headerName: "Comments", field: "Comments", sortable: true, filter: true },
-      { headerName: 'Operations', pinned: 'right', width: 125,
+      { headerName: 'Operations', pinned: 'right', width: 150,
         cellRendererFramework: params => {
-            return <Button size="sm" onClick={() => this.handleDetails(params.data.Id)}>Details</Button>;
+            return (
+              <div>
+                <ButtonGroup size="sm">
+                  <Button onClick={() => this.handleDetails(params.data.Id)}>Details</Button>
+                  <Button onClick={() => this.handleDelete(params.data.Id)}>Delete</Button>
+                </ButtonGroup>
+              </div>
+            );
         }
       }
     ];
 
     this.handleDetails = this.handleDetails.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   handleDetails(id) {
@@ -73,6 +86,21 @@ class StudentsGrid extends React.Component {
       redirect: true,
       redirectTo: `/single-student?id=${id}`,
     });
+  }
+
+  handleDelete(id) {
+    fetch(`${config.endpoint}/students/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.props.accessToken}`,
+      },
+    })
+      .then(() => this.props.fetchStudents())
+      .catch((error) => {
+        this.props.showError('Could not delete student.');
+        console.log(error);
+      });
   }
 
   render() {
