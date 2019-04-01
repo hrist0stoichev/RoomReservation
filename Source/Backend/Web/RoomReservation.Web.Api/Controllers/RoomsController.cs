@@ -240,7 +240,7 @@ namespace RoomReservation.Web.Api.Controllers
                 return this.NotFound();
             }
 
-            if (await IsRoomExistingAsync(model.Number))
+            if (number != model.Number && await IsRoomExistingAsync(model.Number))
             {
                 return this.BadRequest(new { error_message = "The specified room number is already existing! " });
             }
