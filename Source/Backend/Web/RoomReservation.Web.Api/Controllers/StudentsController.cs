@@ -53,6 +53,11 @@ namespace RoomReservation.Web.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(StudentRequestModel model)
         {
+            if (model.CurrentRoomNumber != null)
+            {
+                return this.BadRequest(new { error_message = "You cannot join a room when creating a new student!" });
+            }
+
             var studentWithSameIdExists = await this.Context.Students
                 .AnyAsync(s => s.Id == model.Id);
 
@@ -107,6 +112,8 @@ namespace RoomReservation.Web.Api.Controllers
         public async Task<IActionResult> Put(string id, StudentRequestModel model)
         {
             var student = await this.Context.Students
+                .Include(s => s.InvitationsReceived)
+                .Include(s => s.InvitationsSent)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
             if (student == null)
@@ -114,12 +121,81 @@ namespace RoomReservation.Web.Api.Controllers
                 return this.NotFound();
             }
 
-            var newIdAlreadyExists = await this.Context.Students
-                .AnyAsync(s => s.Id == model.Id);
-
-            if (newIdAlreadyExists)
+            if (model.CurrentRoomNumber != null && !(bool)model.IsOnCampus)
             {
-                return this.BadRequest(new { error_message = "A student with this Id already exists!" });
+                return this.BadRequest(new { error_message = "A student cannot be in a room while off campus!" });
+            }
+
+            if (student.Id != model.Id)
+            {
+                var newIdAlreadyExists = await this.Context.Students
+                    .AnyAsync(s => s.Id == model.Id);
+
+                if (newIdAlreadyExists)
+                {
+                    return this.BadRequest(new { error_message = "A student with this Id already exists!" });
+                }
+            }
+
+            if (student.CurrentRoomNumber != model.CurrentRoomNumber)
+            {
+                var newRoomToJoin = await this.Context.Rooms
+                    .Include(r => r.Invitations)
+                    .Include(r => r.ApartmentRoom)
+                        .ThenInclude(ar => ar.Invitations)
+                    .Include(r => r.ApartmentRoom)
+                        .ThenInclude(ar => ar.CurrentResidents)
+                    .FirstOrDefaultAsync(r => r.Number == model.CurrentRoomNumber);
+
+                if (newRoomToJoin == null)
+                {
+                    return this.NotFound();
+                }
+
+                if (newRoomToJoin.IsMale == null)
+                {
+                    newRoomToJoin.IsMale = model.IsMale;
+                    if (newRoomToJoin.ApartmentRoom != null)
+                    {
+                        newRoomToJoin.ApartmentRoom.IsMale = model.IsMale;
+                    }
+                }
+
+                if (newRoomToJoin.IsMale != model.IsMale)
+                {
+                    return this.BadRequest(new { error_message = "The student and room sexes cannot be different!" });
+                }
+
+                if (newRoomToJoin.Capacity == newRoomToJoin.CurrentResidents.Count)
+                {
+                    return this.BadRequest(new { error_message = "The room you are trying to join is already full!" });
+                }
+
+                if (newRoomToJoin.Capacity + (newRoomToJoin.ApartmentRoom?.Capacity ?? 0) == newRoomToJoin.CurrentResidents.Count + (newRoomToJoin.ApartmentRoom?.CurrentResidents?.Count ?? 0) - 1)
+                {
+                    this.Context.Invitations.RemoveRange(newRoomToJoin.Invitations);
+
+                    if (newRoomToJoin.ApartmentRoom != null)
+                    {
+                        this.Context.Invitations.RemoveRange(newRoomToJoin.ApartmentRoom.Invitations);
+                    }
+                }
+
+                this.Context.Invitations.RemoveRange(student.InvitationsReceived);
+                this.Context.Invitations.RemoveRange(student.InvitationsSent);
+            }
+
+            if (student.IsMale != model.IsMale && student.CurrentRoomNumber == model.CurrentRoomNumber)
+            {
+                var currentRoomIsMale = await this.Context.Rooms
+                    .Where(r => r.Number == student.CurrentRoomNumber)
+                    .Select(r => r.IsMale)
+                    .FirstOrDefaultAsync();
+
+                if (currentRoomIsMale != model.IsMale)
+                {
+                    return this.BadRequest(new { error_message = "The student and room sexes cannot be different!" });
+                }
             }
 
             student.Id = model.Id;
@@ -131,6 +207,7 @@ namespace RoomReservation.Web.Api.Controllers
             student.IsRA = (bool)model.IsRA;
             student.IsOnCampus = (bool)model.IsOnCampus;
             student.Comments = model.Comments;
+            student.CurrentRoomNumber = model.CurrentRoomNumber;
 
             await this.Context.SaveChangesAsync();
             return this.Ok(Mapper.Map<AdminDetailedStudentResponseModel>(student));

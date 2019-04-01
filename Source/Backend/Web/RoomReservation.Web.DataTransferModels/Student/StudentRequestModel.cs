@@ -12,6 +12,10 @@ namespace RoomReservation.Web.DataTransferModels.Student
         [Required]
         public bool? IsOnCampus { get; set; }
 
+        [MinLength(4)]
+        [MaxLength(4)]
+        public string CurrentRoomNumber { get; set; }
+
         [MaxLength(500)]
         public string Comments { get; set; }
     }
