@@ -23,7 +23,7 @@ class Apartments extends React.Component {
             }
           ]}
         >
-          <ApartmentsGrid apartments={this.props.apartments} />
+          <ApartmentsGrid apartments={this.props.apartments} accessToken={this.props.accessToken} fetchApartments={this.props.fetchApartments} showError={this.props.showError} />
         </MainLayout>
       </div>
     );

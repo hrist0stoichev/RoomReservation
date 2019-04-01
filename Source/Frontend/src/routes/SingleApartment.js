@@ -7,19 +7,19 @@ export class SingleApartment extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      apartment: {
-        room1: '',
-        room2: '',
-      }
-    };
+    this.state = {};
   }
 
   componentWillMount() {
-    const url = new URL(window.location.href);
-    const id = url.searchParams.get('id');
-    //const apartment = this.props.apartments.find(apartment => apartment.Id === id);
-    //this.setState({apartment});
+    const url = window.location.href;
+    const number = url.split('?number=')[1];
+    const apartment = this.props.apartments.find(apartment => apartment.Number === number);
+    if (apartment.IsMale === null) {
+      apartment.Sex = '';
+    } else {
+      apartment.Sex = apartment.IsMale ? 'Male' : 'Female';
+    }
+    this.setState(apartment);
   }
 
   render() {
@@ -42,23 +42,39 @@ export class SingleApartment extends Component {
               <ListGroup>
                 <ListGroupItem>
                   <ListGroupItemHeading>Room #1</ListGroupItemHeading>
-                  <ListGroupItemText>{this.state.apartment.room1}</ListGroupItemText>
+                  <ListGroupItemText>{this.state.Number}</ListGroupItemText>
                 </ListGroupItem>
                 <ListGroupItem>
                   <ListGroupItemHeading>Room #2</ListGroupItemHeading>
-                  <ListGroupItemText>{this.state.apartment.room2}</ListGroupItemText>
+                  <ListGroupItemText>{this.state.ApartmentRoomNumber}</ListGroupItemText>
+                </ListGroupItem>
+                <ListGroupItem>
+                  <ListGroupItemHeading>Sex</ListGroupItemHeading>
+                  <ListGroupItemText>{this.state.Sex}</ListGroupItemText>
                 </ListGroupItem>
               </ListGroup>
             </Col>
             <Col>
               <ListGroup>
                 <ListGroupItem>
-                  <ListGroupItemHeading>Room #1 Residents</ListGroupItemHeading>
-                  <ListGroupItemText>{}</ListGroupItemText>
+                  <ListGroupItemHeading>Capacity</ListGroupItemHeading>
+                  <ListGroupItemText>{this.state.TotalCapacity}</ListGroupItemText>
                 </ListGroupItem>
                 <ListGroupItem>
-                  <ListGroupItemHeading>Room #2 Residents</ListGroupItemHeading>
-                  <ListGroupItemText>{}</ListGroupItemText>
+                  <ListGroupItemHeading>Residents Count</ListGroupItemHeading>
+                  <ListGroupItemText>{this.state.TotalResidentsCount}</ListGroupItemText>
+                </ListGroupItem>
+                <ListGroupItem>
+                  <ListGroupItemHeading>Residents Count</ListGroupItemHeading>
+                  <ListGroupItemText>
+                    <ListGroup>
+                      {
+                        this.state.Residents && this.state.Residents.length > 0 ?
+                          this.state.Residents.map(res => <ListGroupItem>ID: {res.Item1} &nbsp;&nbsp;&nbsp; Name: {res.Item2}</ListGroupItem>)
+                        : <ListGroupItem>N/A</ListGroupItem>
+                      }
+                    </ListGroup>
+                  </ListGroupItemText>
                 </ListGroupItem>
               </ListGroup>
             </Col>

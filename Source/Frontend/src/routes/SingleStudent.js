@@ -3,6 +3,7 @@ import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Row,
 import MainLayout from '../components/MainLayout';
 import './SingleView.scss';
 import config from '../config';
+import { Redirect } from 'react-router-dom';
 
 export class SingleStudent extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ export class SingleStudent extends Component {
 
     this.handleInput = this.handleInput.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.redirectToStudents = this.redirectToStudents.bind(this);
   }
 
   componentWillMount() {
@@ -46,6 +48,14 @@ export class SingleStudent extends Component {
     change[e.target.name] = !this.state[e.target.name];
     this.setState(change);
   }
+  
+  redirectToStudents() {
+    if (this.state.redirectToStudents) {
+      return <Redirect to="students" />;
+    } else {
+      return '';
+    }
+  }
 
   handleSave() {
     if (window.confirm('Do you want to save changes?')) {
@@ -58,9 +68,9 @@ export class SingleStudent extends Component {
         body: JSON.stringify(this.state)
       })
         .then(res => res.json())
-        .then(res => console.log(res))
+        .then(() => this.setState({ redirectToStudents: true }))
         .catch(error => {
-          this.props.showError('Could not fetch student information. Try again later.');
+          this.props.showError('Could not save student. Try again later.');
           console.log(error);
         });
     }
@@ -86,7 +96,7 @@ export class SingleStudent extends Component {
           ]}
         >
         <div id="single-view" style={{ marginBottom: '3em' }}>
-        {console.log(this.state.student)}
+          {this.redirectToStudents()}
           <Row>
             <Col>
               <ListGroup>

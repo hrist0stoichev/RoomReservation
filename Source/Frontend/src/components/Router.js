@@ -13,7 +13,7 @@ import RoomsSingle from '../containers/RoomsSingle';
 import Apartments from '../containers/Apartments';
 import CreateInvitation from '../containers/CreateInvitation';
 import CreateApartment from '../containers/CreateApartment';
-import SingleApartment from '../routes/SingleApartment';
+import SingleApartment from '../containers/SingleApartment';
 import CreateStudent from '../containers/CreateStudent';
 import CreateRoom from '../containers/CreateRoom';
 import InvitationsAdmin from '../containers/InvitationsAdmin';

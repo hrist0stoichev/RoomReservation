@@ -40,6 +40,7 @@ class Header extends React.Component {
   renderLoginDropdown() {
     return (
       <IsAuthenticated>
+        {/*
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret>
             Invitations
@@ -56,6 +57,7 @@ class Header extends React.Component {
             <RoomConfirmation roomConfirmed={this.props.roomConfirmed} confirmRoom={this.props.confirmRoom} />
           </DropdownMenu>
         </UncontrolledDropdown>
+        */}
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret>
             Settings

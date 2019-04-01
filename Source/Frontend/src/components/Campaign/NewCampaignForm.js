@@ -11,12 +11,10 @@ class NewCampaignForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      phase1start: moment(),
-      phase1end: moment(),
-      phase2start: moment(),
-      phase2end: moment(),
-      phase3start: moment(),
-      phase3end: moment(),
+      Phase1Start: moment(),
+      Phase2Start: moment(),
+      Phase3Start: moment(),
+      Phase3End: moment(),
     };
     this.handleChange = this.handleChange.bind(this);
     this.buttonHandler = this.buttonHandler.bind(this);
@@ -30,12 +28,10 @@ class NewCampaignForm extends React.Component {
 
   buttonHandler() {
     this.props.createCampaign({
-      phase1start: dateFilter(this.state.phase1start),
-      phase1end: dateFilter(this.state.phase1end),
-      phase2start: dateFilter(this.state.phase2start),
-      phase2end: dateFilter(this.state.phase2end),
-      phase3start: dateFilter(this.state.phase3start),
-      phase3end: dateFilter(this.state.phase3end),
+      Phase1Start: dateFilter(this.state.Phase1Start),
+      Phase2Start: dateFilter(this.state.Phase2Start),
+      Phase3Start: dateFilter(this.state.Phase3Start),
+      Phase3End: dateFilter(this.state.Phase3End),
     });
   }
 
@@ -51,9 +47,9 @@ class NewCampaignForm extends React.Component {
               <FormGroup>
                 <Label for="phase1start">Start</Label>
                 <DatetimePickerTrigger
-                  moment={this.state.phase1start}
-                  onChange={(moment) => { this.handleChange('phase1start', moment); }}>
-                  <Input type="text" value={this.state.phase1start.format('YYYY-MM-DD HH:mm')} readOnly />
+                  moment={this.state.Phase1Start}
+                  onChange={(moment) => { this.handleChange('Phase1Start', moment); }}>
+                  <Input type="text" value={this.state.Phase1Start.format('YYYY-MM-DD HH:mm')} readOnly />
                 </DatetimePickerTrigger>
               </FormGroup>
             </Col>
@@ -61,9 +57,9 @@ class NewCampaignForm extends React.Component {
               <FormGroup>
                 <Label for="phase1end">End</Label>
                 <DatetimePickerTrigger
-                  moment={this.state.phase1end}
-                  onChange={(moment) => { this.handleChange('phase1end', moment); }}>
-                  <Input type="text" value={this.state.phase1end.format('YYYY-MM-DD HH:mm')} readOnly />
+                  moment={this.state.Phase2Start}
+                  onChange={(moment) => { this.handleChange('Phase2Start', moment); }}>
+                  <Input type="text" value={this.state.Phase2Start.format('YYYY-MM-DD HH:mm')} readOnly />
                 </DatetimePickerTrigger>
               </FormGroup>
             </Col>
@@ -74,9 +70,9 @@ class NewCampaignForm extends React.Component {
               <FormGroup>
                 <Label for="phase1start">Start</Label>
                 <DatetimePickerTrigger
-                  moment={this.state.phase2start}
-                  onChange={(moment) => { this.handleChange('phase2start', moment); }}>
-                  <Input type="text" value={this.state.phase2start.format('YYYY-MM-DD HH:mm')} readOnly />
+                  moment={this.state.Phase2Start}
+                  onChange={(moment) => { this.handleChange('Phase2Start', moment); }}>
+                  <Input type="text" value={this.state.Phase2Start.format('YYYY-MM-DD HH:mm')} readOnly />
                 </DatetimePickerTrigger>
               </FormGroup>
             </Col>
@@ -84,9 +80,9 @@ class NewCampaignForm extends React.Component {
               <FormGroup>
                 <Label for="phase1end">End</Label>
                 <DatetimePickerTrigger
-                  moment={this.state.phase2end}
-                  onChange={(moment) => { this.handleChange('phase2end', moment); }}>
-                  <Input type="text" value={this.state.phase2end.format('YYYY-MM-DD HH:mm')} readOnly />
+                  moment={this.state.Phase3Start}
+                  onChange={(moment) => { this.handleChange('Phase3Start', moment); }}>
+                  <Input type="text" value={this.state.Phase3Start.format('YYYY-MM-DD HH:mm')} readOnly />
                 </DatetimePickerTrigger>
               </FormGroup>
             </Col>
@@ -97,9 +93,9 @@ class NewCampaignForm extends React.Component {
               <FormGroup>
                 <Label for="phase1start">Start</Label>
                 <DatetimePickerTrigger
-                  moment={this.state.phase3start}
-                  onChange={(moment) => { this.handleChange('phase3start', moment); }}>
-                  <Input type="text" value={this.state.phase3start.format('YYYY-MM-DD HH:mm')} readOnly />
+                  moment={this.state.Phase3Start}
+                  onChange={(moment) => { this.handleChange('Phase3Start', moment); }}>
+                  <Input type="text" value={this.state.Phase3Start.format('YYYY-MM-DD HH:mm')} readOnly />
                 </DatetimePickerTrigger>
               </FormGroup>
             </Col>
@@ -107,9 +103,9 @@ class NewCampaignForm extends React.Component {
               <FormGroup>
                 <Label for="phase1end">End</Label>
                 <DatetimePickerTrigger
-                  moment={this.state.phase3end}
-                  onChange={(moment) => { this.handleChange('phase3end', moment); }}>
-                  <Input type="text" value={this.state.phase3end.format('YYYY-MM-DD HH:mm')} readOnly />
+                  moment={this.state.Phase3End}
+                  onChange={(moment) => { this.handleChange('Phase3End', moment); }}>
+                  <Input type="text" value={this.state.Phase3End.format('YYYY-MM-DD HH:mm')} readOnly />
                 </DatetimePickerTrigger>
               </FormGroup>
             </Col>

@@ -31,18 +31,21 @@ class CreateApartment extends React.Component {
     if (this.state.room1 === '' || this.state.room2 === '') {
       this.props.showError('All fields are required.');
     } else {
-      fetch(`${config.endpoint}/apartments`, {
+      console.log('req', {
+        Room1Number: this.state.room1,
+        Room2Number: this.state.room2
+      });
+      fetch(`${config.endpoint}/rooms/apartments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.props.accessToken}`,
         },
         body: JSON.stringify({
-          room1: this.state.room1,
-          room2: this.state.room2
+          Room1Number: this.state.room1,
+          Room2Number: this.state.room2
         })
       })
-        .then(res => res.json())
         .then(() => this.setState({ redirectToApartments: true }))
         .catch((error) => {
           this.props.showError('Could not create apartment.');

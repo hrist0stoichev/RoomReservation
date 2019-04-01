@@ -1,14 +1,27 @@
 import React, { Component } from 'react';
 import config from '../config';
-import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Input, Row, Col } from 'reactstrap';
+import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Input, Col, Row, Card, Button } from 'reactstrap';
 import MainLayout from '../components/MainLayout';
 import './SingleView.scss';
+import { Redirect } from 'react-router-dom';
 
 export class RoomSingle extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {}
+    this.state = {
+      Number: '',
+      Capacity: 0,
+      IsRA: false,
+      IsMale: false,
+      IsReserved: false,
+      Comments: '',
+      redirectToRooms: false,
+    };
+
+    this.handleInput = this.handleInput.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.redirectToRooms = this.redirectToRooms.bind(this);
   }
 
   componentWillMount() {
@@ -26,10 +39,60 @@ export class RoomSingle extends Component {
       .catch((error) => console.log(error));
   }
 
+  handleInput(e) {
+    const change = {};
+    change[e.target.name] = e.target.value;
+    this.setState(change);
+  }
+
+  handleCheckbox(e) {
+    const change = {};
+    change[e.target.name] = !this.state[e.target.name];
+    this.setState(change);
+  }
+
+  redirectToRooms() {
+    const url = window.location.href
+    const roomNumber = url.split('?roomNumber=')[1];
+    const rnVtr = roomNumber.split('');
+    if (this.state.redirectToRooms) {
+      return <Redirect to={`/rooms/view?sk=${rnVtr[0]}&floor=${rnVtr[1]}`} />;
+    } else {
+      return '';
+    }
+  }
+
+  handleSave() {
+    if (window.confirm('Do you want to save changes?')) {
+      const url = window.location.href
+      const roomNumber = url.split('?roomNumber=')[1];
+      const newRoom = {
+        ...this.state,
+        Capacity: parseInt(this.state.Capacity)
+      }
+
+      fetch(`${config.endpoint}/rooms/${roomNumber}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.props.accessToken}`,
+        },
+        body: JSON.stringify(newRoom)
+      })
+        .then(res => res.json())
+        .then(() => this.setState({ redirectToRooms: true }))
+        .catch(error => {
+          this.props.showError('Could not save room. Try again later.');
+          console.log(error);
+        });
+    }
+  }
+
   render() {
     return (
       <MainLayout title="Rooms" secondaryNav={[]}>
         <div id="single-view">
+          {this.redirectToRooms()}
           <Row>
             <Col>
               <ListGroup>
@@ -104,6 +167,7 @@ export class RoomSingle extends Component {
                   </ListGroupItemText>
                 </ListGroupItem>
               </ListGroup>
+              <Button style={{ margin: '1em' }} onClick={this.handleSave.bind(this)}>Save Changes</Button>
             </Col>
           </Row>
         </div>

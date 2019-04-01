@@ -24,6 +24,7 @@ export const getCampaign = () => {
 
 export const createCampaign = (dates) => {
   return (dispatch, getState) => {
+    console.log('req body,', dates);
     dispatch(createCampaignLoading(true));
     fetch(`${config.endpoint}/campaigns`, {
       method: 'POST',
@@ -31,12 +32,7 @@ export const createCampaign = (dates) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getState().auth.accessToken}`,
       },
-      body: JSON.stringify({
-        Phase1Start: dates.phase1start,
-        Phase2Start: dates.phase2start,
-        Phase3Start: dates.phase3start,
-        Phase3End: dates.phase3end,
-      }),
+      body: JSON.stringify(dates),
     })
       .then(res => res.json())
       .then(res => {
