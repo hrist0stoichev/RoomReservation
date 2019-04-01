@@ -14,7 +14,7 @@ import Apartments from '../containers/Apartments';
 import CreateInvitation from '../containers/CreateInvitation';
 import CreateApartment from '../containers/CreateApartment';
 import SingleApartment from '../routes/SingleApartment';
-import CreateStudent from '../routes/CreateStudent';
+import CreateStudent from '../containers/CreateStudent';
 import CreateRoom from '../containers/CreateRoom';
 import InvitationsAdmin from '../containers/InvitationsAdmin';
 import CreateInvitationAdmin from '../containers/CreateInvitationAdmin';

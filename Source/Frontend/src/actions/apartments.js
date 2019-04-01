@@ -5,7 +5,7 @@ import config from '../config';
 
 export const fetchApartments = () => {
   return (dispatch, getState) => {
-    fetch(`${config.endpoint}/apartments`, {
+    fetch(`${config.endpoint}/rooms/apartments`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getState().auth.accessToken}`,

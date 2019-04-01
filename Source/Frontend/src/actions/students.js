@@ -2,6 +2,7 @@ import { STUDENTS_BULK_ADD_DONE, STUDENTS_LOADING, STUDENTS_SUCCESS, ROOM_CONFIR
 import { showError } from './alert';
 import makeActionCreator from './makeActionCreator';
 import config from '../config.js';
+import studentFilter from './studentFilter';
 
 export const fetchStudents = () => {
   return (dispatch, getState) => {
@@ -29,7 +30,8 @@ export const fetchStudents = () => {
 
 export const bulkAddStudents = (data) => {
   return (dispatch, getState) => {
-    console.log(data);
+    const normalizedData = studentFilter(data);
+    console.log(normalizedData);
     
     dispatch(studentsLoading(true));
     fetch(`${config.endpoint}/students/batch`, {
@@ -38,7 +40,7 @@ export const bulkAddStudents = (data) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getState().auth.accessToken}`,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(normalizedData)
     })
       .then(() => {
         dispatch(studentsLoading(false));
@@ -51,27 +53,6 @@ export const bulkAddStudents = (data) => {
       });
   };
 };
-
-/*
-export const createStudent = (student) => {
-  return (dispatch, getState) => {
-    fetch(`${config.endpoint}/students/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getState().auth.accessToken}`,
-      },
-      body: JSON.stringify(student)
-    })
-      .then(() => {
-        dispatch(createStudentDone(student));
-      })
-      .catch(error => {
-        dispatch(showError('Could not create student.'));
-      });
-  };
-};
-*/
 
 export const confirmRoom = () => {
   return (dispatch, getState) => {

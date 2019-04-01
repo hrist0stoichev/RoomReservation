@@ -13,10 +13,6 @@ class InvitationsAdmin extends React.Component {
         <MainLayout
           title="Invitations"
           secondaryNav={[
-            {
-              title: 'Create Invitation',
-              href: 'invitations/admin/create'
-            }
           ]}
         >
           <InvitationsGrid invitations={this.props.invitations} accessToken={this.props.accessToken} fetchInvitations={this.props.fetchInvitations} showError={this.props.showError} />

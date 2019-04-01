@@ -9,12 +9,12 @@ const initialState = {
 
 const invitations = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_INVITATIONS_STUDENT_SUCCESS:
+    case FETCH_INVITATIONS_ADMIN_SUCCESS:
       return {
         ...state,
         invitations: action.invitations,
       };
-    case FETCH_INVITATIONS_ADMIN_SUCCESS:
+    case FETCH_INVITATIONS_STUDENT_SUCCESS:
       return {
         ...state,
         fromInvitations: action.fromInvitations,

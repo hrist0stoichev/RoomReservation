@@ -42,8 +42,21 @@ class Students extends React.Component {
       <div id="students-bulk-add">
         {this.renderDone()}
         <MainLayout
-          title="Bulk Add Students"
-          secondaryNav={[]}
+          title="Students | Bulk Add"
+          secondaryNav={[
+            {
+              title: 'All Students',
+              href: '/students/'
+            },
+            {
+              title: 'Create Student',
+              href: '/students/create'
+            },
+            {
+              title: 'Bulk Add Students',
+              href: '/students/bulk-add'
+            }
+          ]}
         >
           <Row>
             <Col md="6" className="pb-3">

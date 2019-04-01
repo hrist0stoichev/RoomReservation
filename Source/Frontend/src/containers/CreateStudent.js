@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import SingleStudent from '../routes/SingleStudent';
+import CreateStudent from '../routes/CreateStudent';
 import { showError } from '../actions/alert';
 
 const mapStateToProps = state => ({
@@ -12,4 +12,4 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SingleStudent);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateStudent);

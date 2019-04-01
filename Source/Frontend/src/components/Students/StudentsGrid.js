@@ -15,17 +15,12 @@ class StudentsGrid extends React.Component {
     };
 
     this.columnDefs = [
+      { headerName: "Student ID", field: "Id", sortable: true, filter: true, width: 135 },
       { headerName: "Name", field: 'FirstName', sortable: true, filter: true,
         cellRendererFramework: params => {
-          return `${params.data.FirstName} ${params.data.MiddleName} ${params.data.LastName}`;
+          return `${params.data.FirstName} ${params.data.MiddleName ? params.data.MiddleName : ''} ${params.data.LastName}`;
         }
       },
-      { headerName: "Registration Time", field: "RegistrationTime", sortable: true, filter: true,
-        cellRendererFramework: params => {
-          return params.data.RegistrationTime.replace('T', ' ');
-        }
-      },
-      { headerName: "Credit Hours", field: "CreditHours", sortable: true, filter: true, width: 150 },
       { headerName: "Email", field: "Email", sortable: true, filter: true },
       { headerName: "Sex", field: "IsMale", sortable: true, filter: true, width: 95,
         cellRendererFramework: params => {
@@ -37,19 +32,9 @@ class StudentsGrid extends React.Component {
         }
       },
       { headerName: "Room Number", field: "CurrentRoomNumber", sortable: true, filter: true, width: 155 },
-      { headerName: "RA", field: "IsRa", sortable: true, filter: true, width: 90,
+      { headerName: "RA", field: "IsRA", sortable: true, filter: true, width: 90,
         cellRendererFramework: params => {
-          return <Input type="checkbox" disabled={true} checked={params.data.IsRa} style={{ margin: '1.05rem 0 0 0' }} />
-        }
-      },
-      { headerName: "Room Confirmed", field: "IsRoomConfirmed", sortable: true, filter: true, width: 169,
-        cellRendererFramework: params => {
-          return <Input type="checkbox" disabled={true} checked={params.data.IsRoomConfirmed} style={{ margin: '1.05rem 0 0 0' }} />
-        }
-      },
-      { headerName: "Banned", field: "IsBanned", sortable: true, filter: true, width: 115,
-        cellRendererFramework: params => {
-          return <Input type="checkbox" disabled={true} checked={params.data.IsBanned} style={{ margin: '1.05rem 0 0 0' }} />
+          return <Input type="checkbox" disabled={true} checked={params.data.IsRA} style={{ margin: '1.05rem 0 0 0' }} />
         }
       },
       { headerName: "On Campus", field: "IsOnCampus", sortable: true, filter: true,  width: 140,
@@ -57,9 +42,14 @@ class StudentsGrid extends React.Component {
           return <Input type="checkbox" disabled={true} checked={params.data.IsOnCampus} style={{ margin: '1.05rem 0 0 0' }} />
         }
       },
-      { headerName: "Deposit Paid", field: "IsDepositPaid", sortable: true, filter: true, width: 145,
+      { headerName: "Credit Hours", field: "CreditHours", sortable: true, filter: true, width: 150 },
+      { headerName: "Registration Time", field: "RegistrationTime", sortable: true, filter: true,
         cellRendererFramework: params => {
-          return <Input type="checkbox" disabled={true} checked={params.data.IsDepositPaid} style={{ margin: '1.05rem 0 0 0' }} />
+          if (params.data.RegistrationTime !== null) {
+            return params.data.RegistrationTime.replace('T', ' ');
+          } else {
+            return '';
+          }
         }
       },
       { headerName: "Comments", field: "Comments", sortable: true, filter: true },

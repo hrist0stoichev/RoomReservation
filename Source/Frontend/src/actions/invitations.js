@@ -13,6 +13,7 @@ export const fetchInvitations = () => {
     })
       .then(res => res.json())
       .then(res => {
+        console.log('inv res', res);
         if (res.from || res.to) {
           dispatch(fetchInvitationsStudentSuccess(res));
         } else {
@@ -28,14 +29,14 @@ export const fetchInvitations = () => {
 
 export const createInvitation = (studentId) => {
   return (dispatch, getState) => {
-    fetch(`${config.endpoint}/students/invitations`, {
+    fetch(`${config.endpoint}/invitations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getState().auth.accessToken}`,
       },
       body: JSON.stringify({
-        studentId
+        InviteeId: studentId
       })
     })
       .catch(error => {

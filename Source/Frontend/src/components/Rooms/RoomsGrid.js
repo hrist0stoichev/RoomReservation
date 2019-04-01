@@ -23,7 +23,7 @@ class RoomsGrid extends React.Component {
       { headerName: "Residents Count", field: "ResidentsCount", sortable: true, filter: true, },
       { headerName: "RA Room", field: "IsRA", sortable: true, filter: true, width: 125,
         cellRendererFramework: params => {
-          return <Input type="checkbox" disabled={true} checked={params.data.IsRa} style={{ margin: '1.05rem 0 0 0' }} />
+          return <Input type="checkbox" disabled={true} checked={params.data.IsRA} style={{ margin: '1.05rem 0 0 0' }} />
         }
       },
       { headerName: "Sex", field: "IsMale", sortable: true, filter: true, width: 95,

@@ -9,6 +9,7 @@ class CreateStudent extends React.Component {
     super(props);
 
     this.state = {
+      Id: '',
       FirstName: '',
       MiddleName: '',
       LastName: '',
@@ -37,9 +38,9 @@ class CreateStudent extends React.Component {
   }
 
   handleSubmit() {
-    if (this.state.FirstName === '' ||
+    if (this.state.Id === '' ||
+        this.state.FirstName === '' ||
         this.state.LastName === '' ||
-        this.state.MiddleName === '' ||
         this.state.CreditHours === '' ||
         this.state.Email === '') {
       this.props.showError('All fields are required.');
@@ -51,7 +52,6 @@ class CreateStudent extends React.Component {
 
       delete student.redirectToStudents;
 
-      /*
       fetch(`${config.endpoint}/students`, {
         method: 'POST',
         headers: {
@@ -66,7 +66,6 @@ class CreateStudent extends React.Component {
           this.props.showError('Could not create student.');
           console.log(error);
         });
-        */
     }
   }
 
@@ -107,6 +106,10 @@ class CreateStudent extends React.Component {
             <Col md="6">
               <Card>
                 <CardBody>
+                  <FormGroup>
+                    <Label for="Id">Student ID</Label>
+                    <Input type="text" name="Id" onChange={this.handleInput} value={this.state.Id} />
+                  </FormGroup>
                   <FormGroup>
                     <Label for="FirstName">First Name</Label>
                     <Input type="text" name="FirstName" onChange={this.handleInput} value={this.state.FirstName} />

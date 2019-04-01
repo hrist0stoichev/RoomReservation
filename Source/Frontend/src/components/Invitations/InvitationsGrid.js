@@ -1,6 +1,6 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { Button } from 'reactstrap';
+import { Button, ButtonGroup } from 'reactstrap';
 import config from '../../config';
 
 class InvitationsGrid extends React.Component {
@@ -9,15 +9,17 @@ class InvitationsGrid extends React.Component {
 
     this.columnDefs = [
       { headerName: "From (Student ID)", field: "FromStudentId", sortable: true, filter: true },
+      { headerName: "From (Student Name)", field: "FromStudentName", sortable: true, filter: true },
       { headerName: "To (Student ID)", field: "ToStudentId", sortable: true, filter: true },
-      { headerName: "Room Number", field: "Room Number", sortable: true, filter: true },
+      { headerName: "To (Student Name)", field: "ToStudentName", sortable: true, filter: true },
+      { headerName: "Room Number", field: "RoomNumber", sortable: true, filter: true },
       { headerName: 'Operations', pinned: 'right',
         cellRendererFramework: params => {
             return (
-              <div>
-                <Button size="sm" onClick={() => this.handleReject(params.data.Id)}>Reject</Button>
-                <Button size="sm" onClick={() => this.handleApprove(params.data.Id)}>Approve</Button>
-              </div>
+              <ButtonGroup size="sm">
+                <Button onClick={() => this.handleReject(params.data.Id)}>Reject</Button>
+                <Button onClick={() => this.handleApprove(params.data.Id)}>Approve</Button>
+              </ButtonGroup>
             );
         }
       }
@@ -40,7 +42,7 @@ class InvitationsGrid extends React.Component {
   }
 
   handleApprove(id) {
-    fetch(`${config.endpoint}/invitations/${id}`, {
+    fetch(`${config.endpoint}/invitations/${id}/accept`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

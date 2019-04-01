@@ -45,7 +45,7 @@ class CreateRoom extends React.Component {
 
       delete room.redirectToRooms;
 
-      /*
+      
       fetch(`${config.endpoint}/rooms`, {
         method: 'POST',
         headers: {
@@ -60,7 +60,7 @@ class CreateRoom extends React.Component {
           this.props.showError('Could not create room.');
           console.log(error);
         });
-        */
+        
     }
   }
 

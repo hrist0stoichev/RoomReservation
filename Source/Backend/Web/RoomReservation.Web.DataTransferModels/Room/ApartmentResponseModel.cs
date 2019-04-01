@@ -13,7 +13,7 @@ namespace RoomReservation.Web.DataTransferModels.Room
 
         public bool? IsMale { get; set; }
 
-        public byte Capacity { get; set; }
+        public int Capacity { get; set; }
 
         public void CreateMappings(Profile configuration)
         {
