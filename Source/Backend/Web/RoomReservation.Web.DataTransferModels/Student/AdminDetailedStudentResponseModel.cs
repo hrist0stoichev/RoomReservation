@@ -26,8 +26,6 @@ namespace RoomReservation.Web.DataTransferModels.Student
 
         public bool IsRA { get; set; }
 
-        public bool IsRoomConfirmed { get; set; }
-
         public bool IsOnCampus { get; set; }
 
         public string Comments { get; set; }

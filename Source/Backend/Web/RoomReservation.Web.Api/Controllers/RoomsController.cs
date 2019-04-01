@@ -126,13 +126,9 @@ namespace RoomReservation.Web.Api.Controllers
         {
             var currentStudent = await base.GetStudentAsync(this.CurrentUserId);
 
-            if (currentStudent.PreviousRoomNumber == null)
-            {
-                return BadRequest(new { error_message = "Current student do not have a room to confirm" });
-            }
-
             var room = await this.Context.Rooms
                 .Include(r => r.CurrentResidents)
+                .Include(r => r.ApartmentRoom)
                 .FirstOrDefaultAsync(r => r.Number == currentStudent.PreviousRoomNumber);
 
             if (!IsEligibleForConfirmation(currentStudent, room))
@@ -140,10 +136,18 @@ namespace RoomReservation.Web.Api.Controllers
                 return this.Unauthorized();
             }
 
-            currentStudent.CurrentRoomNumber = room.Number;
             currentStudent.RegistrationTime = null;
+            room.CurrentResidents.Add(currentStudent);
 
-            room.IsMale = currentStudent.IsMale;
+            // If this is the first resident in the room, mark the room to be the same sex
+            if (room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0) == 1)
+            {
+                room.IsMale = currentStudent.IsMale;
+                if (room.ApartmentRoom != null)
+                {
+                    room.ApartmentRoom.IsMale = currentStudent.IsMale;
+                }
+            }
 
             await this.Context.SaveChangesAsync();
 
@@ -157,6 +161,7 @@ namespace RoomReservation.Web.Api.Controllers
             var room = await this.Context.Rooms
                 .Include(r => r.CurrentResidents)
                 .Include(r => r.Invitations)
+                .Include(r => r.ApartmentRoom)
                 .FirstOrDefaultAsync(r => r.Number == number);
 
             if (room == null)
@@ -175,16 +180,25 @@ namespace RoomReservation.Web.Api.Controllers
 
             room.CurrentResidents.Add(currentUser);
 
-            // If the room becomes full, delete all invitations for it
-            if (room.Capacity == room.CurrentResidents.Count)
+            // Check if the apartment is full and delete all invitations
+            if (room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) == room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0))
             {
                 this.Context.Invitations.RemoveRange(room.Invitations);
+
+                if (room.ApartmentRoom != null)
+                {
+                    this.Context.Invitations.RemoveRange(room.ApartmentRoom.Invitations);
+                }
             }
 
             // If this is the first resident in the room, mark the room to be the same sex
-            if (room.CurrentResidents.Count == 1)
+            if (room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0) == 1)
             {
                 room.IsMale = currentUser.IsMale;
+                if (room.ApartmentRoom != null)
+                {
+                    room.ApartmentRoom.IsMale = currentUser.IsMale;
+                }
             }
 
             // Delete all invitations that the user has received in the past
