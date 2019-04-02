@@ -31,9 +31,9 @@ export const fetchStudents = () => {
 export const bulkAddStudents = (data) => {
   return (dispatch, getState) => {
     const normalizedData = studentFilter(data);
-    console.log(normalizedData);
     
     dispatch(studentsLoading(true));
+    
     fetch(`${config.endpoint}/students/batch`, {
       method: 'POST',
       headers: {
