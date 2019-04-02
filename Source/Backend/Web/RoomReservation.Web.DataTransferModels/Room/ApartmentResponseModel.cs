@@ -19,14 +19,17 @@ namespace RoomReservation.Web.DataTransferModels.Room
 
         public int TotalResidentsCount { get; set; }
 
-        public List<Tuple<string, string>> Residents { get; set; }
+        public List<(string Id, string Name)> Residents1 { get; set; }
+
+        public List<(string Id, string Name)> Residents2 { get; set; }
 
         public void CreateMappings(Profile configuration)
         {
             configuration.CreateMap<Room, ApartmentResponseModel>()
                 .ForMember(arm => arm.TotalCapacity, opts => opts.MapFrom(r => (byte)(r.Capacity + r.ApartmentRoom.Capacity)))
                 .ForMember(arm => arm.TotalResidentsCount, opts => opts.MapFrom(r => r.CurrentResidents.Count + r.ApartmentRoom.CurrentResidents.Count))
-                .ForMember(arm => arm.Residents, opts => opts.MapFrom(r => r.CurrentResidents.Select(res => new Tuple<string, string>(res.Id, res.FirstName + " " + res.LastName)).Union(r.ApartmentRoom.CurrentResidents.Select(res => new Tuple<string, string>(res.Id, res.FirstName + " " + res.LastName)))));
+                .ForMember(arm => arm.Residents1, opts => opts.MapFrom(r => r.CurrentResidents.Select(res => new Tuple<string, string>(res.Id, res.FirstName + " " + res.LastName))))
+                .ForMember(arm => arm.Residents2, opts => opts.MapFrom(r => r.ApartmentRoom.CurrentResidents.Select(res => new Tuple<string, string>(res.Id, res.FirstName + " " + res.LastName))));
         }
     }
 }
