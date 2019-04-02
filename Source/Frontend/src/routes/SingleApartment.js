@@ -65,13 +65,21 @@ export class SingleApartment extends Component {
                   <ListGroupItemText>{this.state.TotalResidentsCount}</ListGroupItemText>
                 </ListGroupItem>
                 <ListGroupItem>
-                  <ListGroupItemHeading>Residents Count</ListGroupItemHeading>
+                  <ListGroupItemHeading>Residents</ListGroupItemHeading>
                   <ListGroupItemText>
                     <ListGroup>
                       {
-                        this.state.Residents && this.state.Residents.length > 0 ?
-                          this.state.Residents.map(res => <ListGroupItem>ID: {res.Item1} &nbsp;&nbsp;&nbsp; Name: {res.Item2}</ListGroupItem>)
-                        : <ListGroupItem>N/A</ListGroupItem>
+                        this.state.Residents1 && this.state.Residents1.length > 0 ?
+                          this.state.Residents1.map(res => <ListGroupItem>ID: {res.Item1} &nbsp;&nbsp;&nbsp; Name: {res.Item2}</ListGroupItem>)
+                        : ''
+                      }
+                      {
+                        this.state.Residents2 && this.state.Residents2.length > 0 ?
+                          this.state.Residents2.map(res => <ListGroupItem>ID: {res.Item1} &nbsp;&nbsp;&nbsp; Name: {res.Item2}</ListGroupItem>)
+                        : ''
+                      }
+                      {
+                        !this.state.Residents1 && !this.state.Residents2 ? <ListGroupItem>N/A</ListGroupItem> : ''
                       }
                     </ListGroup>
                   </ListGroupItemText>
