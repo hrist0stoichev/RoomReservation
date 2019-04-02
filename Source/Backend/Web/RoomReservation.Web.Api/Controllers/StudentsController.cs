@@ -20,14 +20,13 @@ namespace RoomReservation.Web.Api.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> Get(string orderBy = null, string filter = null, int top = 20, int skip = 0)
+        public async Task<IActionResult> Get(string orderBy = null, string filter = null)
         {
             return this.Ok(
                 await this.Context.Students
                     .ProjectTo<AdminDetailedStudentResponseModel>()
                     .OrderByDynamic(orderBy)
                     .WhereDynamic(filter)
-                    .Paginate(skip, top)
                     .ToListAsync()
             );
         }
