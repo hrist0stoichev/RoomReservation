@@ -297,14 +297,14 @@ namespace RoomReservation.Web.Api.Controllers
             {
                 var apartment = apartmentRooms[0];
 
-                if (apartmentRooms[1].Residents1.Count > apartment.Residents1.Count)
+                if (apartmentRooms[1].Residents2.Count > apartment.Residents1.Count)
                 {
-                    apartment.Residents1 = apartmentRooms[1].Residents1;
+                    apartment.Residents1 = apartmentRooms[1].Residents2;
                 }
 
-                if (apartmentRooms[1].Residents2.Count > apartment.Residents2.Count)
+                if (apartmentRooms[1].Residents1.Count > apartment.Residents2.Count)
                 {
-                    apartment.Residents2 = apartmentRooms[1].Residents2;
+                    apartment.Residents2 = apartmentRooms[1].Residents1;
                 }
 
                 apartmentsToReturn.Add(apartment);
