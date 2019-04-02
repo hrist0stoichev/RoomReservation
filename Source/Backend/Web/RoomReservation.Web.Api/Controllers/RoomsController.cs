@@ -114,7 +114,7 @@ namespace RoomReservation.Web.Api.Controllers
 
             this.Context.Invitations.RemoveRange(roomToDelete.Invitations);
             this.Context.Rooms.Remove(roomToDelete);
-            
+
             await this.Context.SaveChangesAsync();
 
             return this.Ok();
@@ -277,17 +277,40 @@ namespace RoomReservation.Web.Api.Controllers
                 .ProjectTo<ApartmentResponseModel>()
                 .ToListAsync();
 
-            var apartmentsDict = new Dictionary<(string, string), ApartmentResponseModel>();
+            var apartmentsDict = new Dictionary<(string, string), List<ApartmentResponseModel>>();
 
             foreach (var apartment in apartments)
             {
-                if (!apartmentsDict.ContainsKey((apartment.ApartmentRoomNumber, apartment.Number)))
+                if (apartmentsDict.ContainsKey((apartment.ApartmentRoomNumber, apartment.Number)))
                 {
-                    apartmentsDict.Add((apartment.Number, apartment.ApartmentRoomNumber), apartment);
+                    apartmentsDict[(apartment.ApartmentRoomNumber, apartment.Number)].Add(apartment);
+                }
+                else
+                {
+                    apartmentsDict.Add((apartment.Number, apartment.ApartmentRoomNumber), new List<ApartmentResponseModel> { apartment });
                 }
             }
 
-            return this.Ok(apartmentsDict.Values.ToList());
+            var apartmentsToReturn = new List<ApartmentResponseModel>();
+
+            foreach (var apartmentRooms in apartmentsDict.Values)
+            {
+                var apartment = apartmentRooms[0];
+
+                if (apartmentRooms[1].Residents1.Count > apartment.Residents1.Count)
+                {
+                    apartment.Residents1 = apartmentRooms[1].Residents1;
+                }
+
+                if (apartmentRooms[1].Residents2.Count > apartment.Residents2.Count)
+                {
+                    apartment.Residents2 = apartmentRooms[1].Residents2;
+                }
+
+                apartmentsToReturn.Add(apartment);
+            }
+
+            return this.Ok(apartmentsToReturn);
         }
 
         [HttpPost("apartments")]
@@ -300,6 +323,11 @@ namespace RoomReservation.Web.Api.Controllers
             if (room1 == null || room2 == null)
             {
                 return this.NotFound();
+            }
+
+            if (room1.ApartmentRoomNumber != null || room2.ApartmentRoomNumber != null)
+            {
+                return this.BadRequest(new { error_message = "One of the rooms is already part of an apartment!" });
             }
 
             room1.ApartmentRoomNumber = room2.Number;
@@ -318,14 +346,14 @@ namespace RoomReservation.Web.Api.Controllers
                 .Include(r => r.ApartmentRoom)
                 .FirstOrDefaultAsync(r => r.Number == number);
 
-            if (room == null)
+            if (room == null || room.ApartmentRoomNumber == null)
             {
                 return this.NotFound();
             }
 
             room.ApartmentRoom.ApartmentRoomNumber = null;
             room.ApartmentRoomNumber = null;
-            
+
             await this.Context.SaveChangesAsync();
             return this.Ok();
         }
