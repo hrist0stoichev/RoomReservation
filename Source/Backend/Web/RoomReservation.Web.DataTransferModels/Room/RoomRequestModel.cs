@@ -17,7 +17,6 @@ namespace RoomReservation.Web.DataTransferModels.Room
         [Required]
         public bool? IsRA { get; set; }
 
-        [Required]
         public bool? IsMale { get; set; }
 
         [Required]
