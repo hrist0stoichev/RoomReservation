@@ -112,7 +112,7 @@ class StudentsGrid extends React.Component {
           <AgGridReact
             columnDefs={this.columnDefs}
             rowData={this.props.students}
-            paginationAutoPageSize={true}
+            paginationPageSize={30}
             pagination={true}>
           </AgGridReact>
         </div>

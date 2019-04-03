@@ -9,7 +9,22 @@ export class SingleStudent extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      Id: '',
+      FirstName: '',
+      MiddleName: '',
+      LastName: '',
+      RegistrationTime: '',
+      CreditHours: 0,
+      Email: '',
+      IsMale: true,
+      IsRA: false,
+      IsOnCampus: false,
+      Comments: '',
+      CurrentRoomNumber: '',
+      InvitationsSent: [],
+      InvitationsReceived: []
+    };
 
     this.handleInput = this.handleInput.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -59,6 +74,7 @@ export class SingleStudent extends Component {
 
   handleSave() {
     if (window.confirm('Do you want to save changes?')) {
+      console.log(this.state);
       fetch(`${config.endpoint}/students/${this.state.Id}`, {
         method: 'PUT',
         headers: {

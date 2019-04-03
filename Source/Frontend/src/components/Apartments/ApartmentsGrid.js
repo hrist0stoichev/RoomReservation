@@ -86,7 +86,7 @@ class ApartmentsGrid extends React.Component {
         <AgGridReact
           columnDefs={this.columnDefs}
           rowData={this.props.apartments}
-          paginationAutoPageSize={true}
+          paginationPageSize={30}
           pagination={true}>
         </AgGridReact>
       </div>
