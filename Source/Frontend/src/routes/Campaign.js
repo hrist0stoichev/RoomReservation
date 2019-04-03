@@ -32,7 +32,7 @@ class Campaign extends React.Component {
                 <CardBody>
                   <CardTitle>Start Campaign</CardTitle>
                   <CardText>
-                    <NewCampaignForm getCampaign={this.props.getCampaign} createCampaign={this.props.createCampaign} isDone={this.props.isDone} isLoading={this.props.isLoading} />
+                    <NewCampaignForm showError={this.props.showError} accessToken={this.props.accessToken} phase={this.props.phase} getCampaign={this.props.getCampaign} createCampaign={this.props.createCampaign} isDone={this.props.isDone} isLoading={this.props.isLoading} />
                   </CardText>
                 </CardBody>
               </Card>

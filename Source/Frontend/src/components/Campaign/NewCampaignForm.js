@@ -4,6 +4,7 @@ import {DatetimePickerTrigger} from 'rc-datetime-picker';
 import Loader from '../Loader';
 import moment from 'moment';
 import './NewCampaignForm.scss';
+import config from '../../config';
 
 const dateFilter = date => date.toISOString().split('.')[0];
 
@@ -18,6 +19,21 @@ class NewCampaignForm extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.buttonHandler = this.buttonHandler.bind(this);
+    this.stopHandler = this.stopHandler.bind(this);
+  }
+
+  stopHandler() {
+    fetch(`${config.endpoint}/campaigns`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.props.accessToken}`,
+      }
+    })
+      .catch(error => {
+        this.props.showError('Could not stop the campaign. Try again later.');
+        console.log(error);
+      });
   }
 
   handleChange(name, date) {
@@ -112,7 +128,11 @@ class NewCampaignForm extends React.Component {
           </Row>
           <Row>
             <Col>
-              <Button color="primary" className="mt-3" onClick={this.buttonHandler}>Start Campaign</Button>
+            {console.log(this.props.phase)}
+              {
+                this.props.phase !== -1 ? <Button color="primary" className="mt-3" onClick={this.stopHandler}>Stop Campaign</Button>
+                : <Button color="primary" className="mt-3" onClick={this.buttonHandler}>Start Campaign</Button>
+              }
             </Col>
           </Row>
         </div>

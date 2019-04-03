@@ -4,6 +4,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { Button, Input, ButtonGroup } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import config from '../../config';
+import { CSVLink } from "react-csv";
 
 class StudentsGrid extends React.Component {
   constructor(props) {
@@ -21,28 +22,7 @@ class StudentsGrid extends React.Component {
           return `${params.data.FirstName} ${params.data.MiddleName ? params.data.MiddleName : ''} ${params.data.LastName}`;
         }
       },
-      { headerName: "Email", field: "Email", sortable: true, filter: true },
-      { headerName: "Sex", field: "IsMale", sortable: true, filter: true, width: 95,
-        cellRendererFramework: params => {
-          if (params.data.isMale !== null) {
-            return params.data.IsMale ? 'Male' : 'Female';
-          } else {
-            return '';
-          }
-        }
-      },
       { headerName: "Room Number", field: "CurrentRoomNumber", sortable: true, filter: true, width: 155 },
-      { headerName: "RA", field: "IsRA", sortable: true, filter: true, width: 90,
-        cellRendererFramework: params => {
-          return <Input type="checkbox" disabled={true} checked={params.data.IsRA} style={{ margin: '1.05rem 0 0 0' }} />
-        }
-      },
-      { headerName: "On Campus", field: "IsOnCampus", sortable: true, filter: true,  width: 140,
-        cellRendererFramework: params => {
-          return <Input type="checkbox" disabled={true} checked={params.data.IsOnCampus} style={{ margin: '1.05rem 0 0 0' }} />
-        }
-      },
-      { headerName: "Credit Hours", field: "CreditHours", sortable: true, filter: true, width: 150 },
       { headerName: "Registration Time", field: "RegistrationTime", sortable: true, filter: true,
         cellRendererFramework: params => {
           if (params.data.RegistrationTime !== null) {
@@ -53,6 +33,27 @@ class StudentsGrid extends React.Component {
         }
       },
       { headerName: "Comments", field: "Comments", sortable: true, filter: true },
+      { headerName: "RA", field: "IsRA", sortable: true, filter: true, width: 90,
+        cellRendererFramework: params => {
+          return <Input type="checkbox" disabled={true} checked={params.data.IsRA} style={{ margin: '1.05rem 0 0 0' }} />
+        }
+      },
+      { headerName: "Email", field: "Email", sortable: true, filter: true },
+      { headerName: "Sex", field: "IsMale", sortable: true, filter: true, width: 95,
+        cellRendererFramework: params => {
+          if (params.data.isMale !== null) {
+            return params.data.IsMale ? 'Male' : 'Female';
+          } else {
+            return '';
+          }
+        }
+      },
+      { headerName: "On Campus", field: "IsOnCampus", sortable: true, filter: true,  width: 140,
+        cellRendererFramework: params => {
+          return <Input type="checkbox" disabled={true} checked={params.data.IsOnCampus} style={{ margin: '1.05rem 0 0 0' }} />
+        }
+      },
+      { headerName: "Credit Hours", field: "CreditHours", sortable: true, filter: true, width: 150 },
       { headerName: 'Operations', pinned: 'right', width: 150,
         cellRendererFramework: params => {
             return (
@@ -106,9 +107,17 @@ class StudentsGrid extends React.Component {
           <div 
           className="ag-theme-material"
           style={{ 
-          height: '500px', 
+          height: '500px',
           width: '100%' }} 
           >
+          <div style={{ width: '100%', textAlign: 'right', marginBottom: '1em' }}>
+            <CSVLink data={this.props.students} filename="students-export.csv">
+              <svg viewBox="0 0 512 512" style={{ width: '21px' }}>
+                <path id="statement" d="M339.527,370.312H171.505v-30h168.022V370.312z M339.495,314.896h-167.99v-30h167.99V314.896zM339.495,259.562h-167.99v-30h167.99V259.562z M297.818,90v85.75h85.864V422H128.317V90H297.818 M322.818,50H88.317v412h335.365V150.75L322.818,50z"/>
+              </svg>
+              <div style={{ display: 'inline-block', position: 'relative', top: '2px', color: 'black' }}>Export CSV</div>
+            </CSVLink>
+          </div>
           <AgGridReact
             columnDefs={this.columnDefs}
             rowData={this.props.students}
