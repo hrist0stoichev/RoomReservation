@@ -95,6 +95,7 @@ export class RoomSingle extends Component {
   render() {
     return (
       <MainLayout title="Rooms" secondaryNav={[]}>
+      {console.log(this.state)}
         <div id="single-view">
           {this.redirectToRooms()}
           <Row>

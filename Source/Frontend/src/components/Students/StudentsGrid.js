@@ -80,18 +80,20 @@ class StudentsGrid extends React.Component {
   }
 
   handleDelete(id) {
-    fetch(`${config.endpoint}/students/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.props.accessToken}`,
-      },
-    })
-      .then(() => this.props.fetchStudents())
-      .catch((error) => {
-        this.props.showError('Could not delete student.');
-        console.log(error);
-      });
+    if (window.confirm('Are you sure?')) {
+      fetch(`${config.endpoint}/students/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.props.accessToken}`,
+        },
+      })
+        .then(() => this.props.fetchStudents())
+        .catch((error) => {
+          this.props.showError('Could not delete student.');
+          console.log(error);
+        });
+    }
   }
 
   render() {

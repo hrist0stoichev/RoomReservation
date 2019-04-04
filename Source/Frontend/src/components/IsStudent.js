@@ -1,11 +1,11 @@
 import React from 'react';
 
-const IsAdmin = (props) => {
-  if (props.isAdmin) {
+const IsStudent = (props) => {
+  if (props.isStudent) {
     return props.children;
   } else {
     return '';
   }
 };
 
-export default IsAdmin;
+export default IsStudent;

@@ -18,6 +18,8 @@ import './Header.scss';
 import IsAuthenticated from '../containers/IsAuthenticated';
 import RoomConfirmation from './RoomConfirmation';
 import Invitations from '../containers/Invitations';
+import IsAdmin from '../containers/IsAdmin';
+import IsStudent from '../containers/IsStudent';
 
 class Header extends React.Component {
   constructor(props) {
@@ -40,24 +42,24 @@ class Header extends React.Component {
   renderLoginDropdown() {
     return (
       <IsAuthenticated>
-        {/*
-        <UncontrolledDropdown nav inNavbar>
-          <DropdownToggle nav caret>
-            Invitations
-          </DropdownToggle>
-          <DropdownMenu right style={{ minWidth: '21rem' }}>
-            <Invitations />
-          </DropdownMenu>
-        </UncontrolledDropdown>
-        <UncontrolledDropdown nav inNavbar>
-          <DropdownToggle nav caret>
-            Room Confirmation
-          </DropdownToggle>
-          <DropdownMenu right style={{ minWidth: '21rem' }}>
-            <RoomConfirmation roomConfirmed={this.props.roomConfirmed} confirmRoom={this.props.confirmRoom} />
-          </DropdownMenu>
-        </UncontrolledDropdown>
-        */}
+        <IsStudent>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              Invitations
+            </DropdownToggle>
+            <DropdownMenu right style={{ minWidth: '21rem' }}>
+              <Invitations />
+            </DropdownMenu>
+          </UncontrolledDropdown>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              Room Confirmation
+            </DropdownToggle>
+            <DropdownMenu right style={{ minWidth: '21rem' }}>
+              <RoomConfirmation roomConfirmed={this.props.roomConfirmed} confirmRoom={this.props.confirmRoom} />
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        </IsStudent>
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret>
             Settings
@@ -83,21 +85,25 @@ class Header extends React.Component {
                 <NavbarToggler onClick={this.toggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
                   <Nav className="ml-auto" navbar>
-                    <NavItem>
-                      <Link to="/students">Students</Link>
-                    </NavItem>
-                    <NavItem>
-                      <Link to="/campaign">Campaign</Link>
-                    </NavItem>
+                    <IsAdmin>
+                      <NavItem>
+                        <Link to="/students">Students</Link>
+                      </NavItem>
+                      <NavItem>
+                        <Link to="/campaign">Campaign</Link>
+                      </NavItem>
+                    </IsAdmin>
                     <NavItem>
                       <Link to="/rooms">Rooms</Link>
                     </NavItem>
-                    <NavItem>
-                      <Link to="/apartments">Apartments</Link>
-                    </NavItem>
-                    <NavItem>
-                      <Link to="/invitations">Invitations</Link>
-                    </NavItem>
+                    <IsAdmin>
+                      <NavItem>
+                        <Link to="/apartments">Apartments</Link>
+                      </NavItem>
+                      <NavItem>
+                        <Link to="/invitations">Invitations</Link>
+                      </NavItem>
+                    </IsAdmin>
                     {this.renderLoginDropdown()}
                   </Nav>
                 </Collapse>

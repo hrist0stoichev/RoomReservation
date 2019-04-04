@@ -22,7 +22,7 @@ const auth = (state = initialState, action) => {
         isAuthenticated: true,
         username: action.user.userName,
         accessToken: action.user.access_token,
-        userRole: action.user.userRole,
+        userRole: action.user.userRole || 'Student',
         phase: action.user.phase
       };
     case TOKEN_VALIDATED: {

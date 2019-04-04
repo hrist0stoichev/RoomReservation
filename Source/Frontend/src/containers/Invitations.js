@@ -5,6 +5,7 @@ import { fetchInvitations } from '../actions/invitations';
 const mapStateToProps = state => ({
   invitations: state.invitations.invitations,
   isLoading: state.invitations.isLoading,
+  accessToken: state.auth.accessToken
 });
 
 const mapDispatchToProps = dispatch => ({

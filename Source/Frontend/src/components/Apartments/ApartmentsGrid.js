@@ -53,18 +53,20 @@ class ApartmentsGrid extends React.Component {
   }
 
   handleDelete(number) {
-    fetch(`${config.endpoint}/rooms/apartments/${number}/detach`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.props.accessToken}`,
-      },
-    })
-      .then(() => this.props.fetchApartments())
-      .catch((error) => {
-        this.props.showError('Could not delete student.');
-        console.log(error);
-      });
+    if (window.confirm('Are you sure?')) {
+      fetch(`${config.endpoint}/rooms/apartments/${number}/detach`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.props.accessToken}`,
+        },
+      })
+        .then(() => this.props.fetchApartments())
+        .catch((error) => {
+          this.props.showError('Could not delete student.');
+          console.log(error);
+        });
+    }
   }
 
   renderRedirect() {

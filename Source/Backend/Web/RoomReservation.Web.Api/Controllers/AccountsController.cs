@@ -41,7 +41,7 @@ namespace RoomReservation.Web.Api.Controllers
               var ldapUser = new LdapUser{
               DisplayName = "Nikola",
               Description = "100164483",
-              Role = "Admin"
+              Role = "Student"
             };*/
 
             if (ldapUser == null)

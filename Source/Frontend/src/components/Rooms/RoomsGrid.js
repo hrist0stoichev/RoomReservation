@@ -46,9 +46,14 @@ class RoomsGrid extends React.Component {
         cellRendererFramework: params => {
             return (
               <ButtonGroup size="sm">
-                <Button onClick={() => this.handleDetails(params.data.Number)}>Details</Button>
-                <Button onClick={() => this.handleDelete(params.data.Number)}>Delete</Button>
-                <Button onClick={() => this.joinRoom(params.data.Number)}>Join</Button>
+                {this.props.userRole === 'Admin' ?
+                    <div>
+                      <Button onClick={() => this.handleDetails(params.data.Number)}>Details</Button>
+                      <Button onClick={() => this.handleDelete(params.data.Number)}>Delete</Button>
+                    </div>
+                   :
+                   <Button onClick={() => this.joinRoom(params.data.Number)}>Join</Button>
+                }
               </ButtonGroup>
             );
         }
@@ -64,18 +69,20 @@ class RoomsGrid extends React.Component {
   }
 
   handleDelete(number) {
-    fetch(`${config.endpoint}/rooms/${number}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.props.accessToken}`,
-      },
-    })
-      .then(() => this.props.fetchRooms())
-      .catch((error) => {
-        this.props.showError('Could not delete room.');
-        console.log(error);
-      });
+    if (window.confirm('Are you sure?')) {
+      fetch(`${config.endpoint}/rooms/${number}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.props.accessToken}`,
+        },
+      })
+        .then(() => this.props.fetchRooms())
+        .catch((error) => {
+          this.props.showError('Could not delete room.');
+          console.log(error);
+        });
+    }
   }
 
   joinRoom(number) {

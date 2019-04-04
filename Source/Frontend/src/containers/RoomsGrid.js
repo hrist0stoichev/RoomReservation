@@ -8,6 +8,7 @@ const mapStateToProps = (state, ownProps) => ({
   rooms: state.rooms.rooms,
   sk: ownProps.sk,
   floor: ownProps.floor,
+  userRole: state.auth.userRole
 });
 
 const mapDispatchToProps = dispatch => ({
