@@ -3,6 +3,7 @@ import MainLayout from '../components/MainLayout';
 import { Redirect } from 'react-router-dom';
 import config from '../config';
 import { FormGroup, Label, Input, Card, CardBody, Row, Col, Button } from 'reactstrap';
+import IErrorHandler from '../components/ErrorHandler';
 
 class CreateApartment extends React.Component {
   constructor(props) {
@@ -13,6 +14,8 @@ class CreateApartment extends React.Component {
       room2: '',
       redirectToApartments: false,
     };
+
+    this.ErrorHandler = new IErrorHandler('create apartment', this.props.showError);
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.redirectToApartments = this.redirectToApartments.bind(this);
@@ -31,10 +34,6 @@ class CreateApartment extends React.Component {
     if (this.state.room1 === '' || this.state.room2 === '') {
       this.props.showError('All fields are required.');
     } else {
-      console.log('req', {
-        Room1Number: this.state.room1,
-        Room2Number: this.state.room2
-      });
       fetch(`${config.endpoint}/rooms/apartments`, {
         method: 'POST',
         headers: {
@@ -46,10 +45,15 @@ class CreateApartment extends React.Component {
           Room2Number: this.state.room2
         })
       })
-        .then(() => this.setState({ redirectToApartments: true }))
+        .then(res => {
+          if (!res.ok) { throw res; }
+          this.setState({redirectToApartments: true});
+        })
         .catch((error) => {
-          this.props.showError('Could not create apartment.');
-          console.log(error);
+          return this.ErrorHandler.catchStep(error);
+        })
+        .then(error => {
+          this.ErrorHandler.thenStep(error);
         });
     }
   }

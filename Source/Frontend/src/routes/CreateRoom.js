@@ -3,6 +3,7 @@ import MainLayout from '../components/MainLayout';
 import { Redirect } from 'react-router-dom';
 import config from '../config';
 import { FormGroup, Label, Input, Card, CardBody, Row, Col, Button } from 'reactstrap';
+import IErrorHandler from '../components/ErrorHandler';
 
 class CreateRoom extends React.Component {
   constructor(props) {
@@ -17,6 +18,8 @@ class CreateRoom extends React.Component {
       Comments: '',
       redirectToRooms: false,
     };
+  
+    this.ErrorHandler = new IErrorHandler('create room', this.props.showError);
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.redirectToRooms = this.redirectToRooms.bind(this);
@@ -54,11 +57,16 @@ class CreateRoom extends React.Component {
         },
         body: JSON.stringify(room)
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) { throw res; }
+          return res.json();
+        })
         .then(() => this.setState({ redirectToRooms: true }))
         .catch((error) => {
-          this.props.showError('Could not create room.');
-          console.log(error);
+          this.ErrorHandler.catchStep(error);
+        })
+        .then((error) => {
+          this.ErrorHandler.thenStep(error);
         });
         
     }

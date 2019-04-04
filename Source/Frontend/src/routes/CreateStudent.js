@@ -3,6 +3,7 @@ import MainLayout from '../components/MainLayout';
 import { Redirect } from 'react-router-dom';
 import config from '../config';
 import { FormGroup, Label, Input, Card, CardBody, Row, Col, Button } from 'reactstrap';
+import IErrorHandler from '../components/ErrorHandler';
 
 class CreateStudent extends React.Component {
   constructor(props) {
@@ -22,6 +23,8 @@ class CreateStudent extends React.Component {
       Comments: '',
       redirectToStudents: false,
     };
+
+    this.ErrorHandler = new IErrorHandler('create student', this.props.showError);
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.redirectToStudents = this.redirectToStudents.bind(this);
@@ -60,11 +63,16 @@ class CreateStudent extends React.Component {
         },
         body: JSON.stringify(student)
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) { throw res; }
+          return res.json();
+        })
         .then(() => this.setState({ redirectToStudents: true }))
         .catch((error) => {
-          this.props.showError('Could not create student.');
-          console.log(error);
+          this.ErrorHandler.catchStep(error);
+        })
+        .then((error) => {
+          this.ErrorHandler.thenStep(error);
         });
     }
   }

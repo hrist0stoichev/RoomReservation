@@ -4,6 +4,11 @@ import MainLayout from '../components/MainLayout';
 import './SingleView.scss';
 import config from '../config';
 import { Redirect } from 'react-router-dom';
+import IErrorHandler from '../components/ErrorHandler';
+import {DatetimePickerTrigger} from 'rc-datetime-picker';
+import moment from 'moment';
+
+const dateFilter = date => date.toISOString().split('.')[0];
 
 export class SingleStudent extends Component {
   constructor(props) {
@@ -22,13 +27,20 @@ export class SingleStudent extends Component {
       IsOnCampus: false,
       Comments: '',
       CurrentRoomNumber: '',
+      hasRegistrationTime: false,
+      RegistrationTime: null,
       InvitationsSent: [],
       InvitationsReceived: []
     };
 
+    this.ErrorHandler = new IErrorHandler('update student', this.props.showError);
+
     this.handleInput = this.handleInput.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.redirectToStudents = this.redirectToStudents.bind(this);
+    this.handleRegTime = this.handleRegTime.bind(this);
+    this.renderRegistrationTime = this.renderRegistrationTime.bind(this);
+    this.newRegTime = this.newRegTime.bind(this);
   }
 
   componentWillMount() {
@@ -43,11 +55,20 @@ export class SingleStudent extends Component {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
-        this.setState(res);
+        if (!res.RegistrationTime) {
+          this.setState({
+            ...res,
+            RegistrationTime: null
+          })
+        } else {
+          this.setState({
+            ...res,
+            hasRegistrationTime: true,
+            RegistrationTime: moment(res.RegistrationTime)
+          });
+        }
       })
       .catch(error => {
-        this.props.showError('Could not fetch student information. Try again later.');
         console.log(error);
       });
   }
@@ -64,6 +85,10 @@ export class SingleStudent extends Component {
     this.setState(change);
   }
   
+  handleRegTime(moment) {
+    this.setState({ RegistrationTime: moment });
+  }
+
   redirectToStudents() {
     if (this.state.redirectToStudents) {
       return <Redirect to="students" />;
@@ -81,14 +106,44 @@ export class SingleStudent extends Component {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.props.accessToken}`,
         },
-        body: JSON.stringify(this.state)
+        body: JSON.stringify({
+          ...this.state,
+          RegistrationTime: this.state.RegistrationTime ? dateFilter(this.state.RegistrationTime) : null
+        })
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw res;
+          return res.json();
+        })
         .then(() => this.setState({ redirectToStudents: true }))
-        .catch(error => {
-          this.props.showError('Could not save student. Try again later.');
-          console.log(error);
-        });
+        .catch(error => this.ErrorHandler.catchStep(error))
+        .then(error => this.ErrorHandler.thenStep(error));
+    }
+  }
+
+  newRegTime() {
+    this.setState({
+      hasRegistrationTime: true,
+      RegistrationTime: moment()
+    });
+  }
+
+  renderRegistrationTime() {
+    if (this.state.hasRegistrationTime) {
+      return (
+        <DatetimePickerTrigger
+          moment={this.state.RegistrationTime}
+          onChange={(moment) => { this.handleRegTime(moment); }}>
+          <Input type="text" value={this.state.RegistrationTime.format('YYYY-MM-DD HH:mm')} readOnly />
+        </DatetimePickerTrigger>
+      );
+    } else {
+      return (
+        <div>
+          <p>N/A</p>
+          <Button onClick={this.newRegTime}>Set Registration Time</Button>
+        </div>
+      );
     }
   }
 
@@ -190,13 +245,15 @@ export class SingleStudent extends Component {
                   <ListGroupItemText><Input type="checkbox" name="IsRA" onChange={this.handleCheckbox} checked={this.state.IsRA} /></ListGroupItemText>
                 </ListGroupItem>
                 <ListGroupItem>
-                  <ListGroupItemHeading>Registration Time</ListGroupItemHeading>
-                  <ListGroupItemText>{this.state.RegistrationTime || 'N/A'}</ListGroupItemText>
-                </ListGroupItem>
-                <ListGroupItem>
                   <ListGroupItemHeading>Comments</ListGroupItemHeading>
                   <ListGroupItemText>
                     <Input type="text" name="Comments" onChange={this.handleInput} value={this.state.Comments} />
+                  </ListGroupItemText>
+                </ListGroupItem>
+                <ListGroupItem>
+                  <ListGroupItemHeading>Registration Time</ListGroupItemHeading>
+                  <ListGroupItemText>
+                    {this.renderRegistrationTime()}
                   </ListGroupItemText>
                 </ListGroupItem>
                 <ListGroupItem>

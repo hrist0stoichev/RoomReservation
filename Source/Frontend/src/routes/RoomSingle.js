@@ -4,6 +4,7 @@ import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Inpu
 import MainLayout from '../components/MainLayout';
 import './SingleView.scss';
 import { Redirect } from 'react-router-dom';
+import IErrorHandler from '../components/ErrorHandler';
 
 export class RoomSingle extends Component {
   constructor(props) {
@@ -18,6 +19,8 @@ export class RoomSingle extends Component {
       Comments: '',
       redirectToRooms: false,
     };
+
+    this.ErrorHandler = new IErrorHandler('update room', this.props.showError);
 
     this.handleInput = this.handleInput.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -79,12 +82,13 @@ export class RoomSingle extends Component {
         },
         body: JSON.stringify(newRoom)
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw res;
+          return res.json();
+        })
         .then(() => this.setState({ redirectToRooms: true }))
-        .catch(error => {
-          this.props.showError('Could not save room. Try again later.');
-          console.log(error);
-        });
+        .catch(error => this.ErrorHandler.catchStep(error))
+        .then(error => this.ErrorHandler.thenStep(error));
     }
   }
 
