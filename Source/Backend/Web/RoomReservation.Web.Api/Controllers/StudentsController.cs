@@ -75,12 +75,12 @@ namespace RoomReservation.Web.Api.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("batch")]
-        public async Task<IActionResult> Post(List<BasicStudentRequestModel> model)
+        public async Task<IActionResult> Post(BatchAddStudentsRequestModel model)
         {
             var allStudents = await this.Context.Students
                 .ToListAsync();
 
-            var modelStudentsById = model
+            var modelStudentsById = model.Students
                 .AsQueryable()
                 .ProjectTo<Student>()
                 .ToDictionary(s => s.Id, s => s);
