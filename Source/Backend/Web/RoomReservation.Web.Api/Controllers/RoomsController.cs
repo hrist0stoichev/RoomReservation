@@ -24,9 +24,9 @@ namespace RoomReservation.Web.Api.Controllers
         private PhasesProvider PhasesProvider { get; }
 
         [Authorize]
-        public async Task<IActionResult> Get(string skaptoNumber, string floor)
+        public async Task<IActionResult> Get(string skaptoNumber = null, string floor = null)
         {
-            var roomNumberPattern = skaptoNumber + floor + "__";
+            var roomNumberPattern = string.Format("{0}{1}__", skaptoNumber ?? "_", floor ?? "_");
 
             var roomsQuery = this.Context.Rooms
                 .AsNoTracking()
