@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,8 +16,12 @@ namespace RoomReservation.Web.Api.Controllers
 {
     public class StudentsController : BaseController
     {
-        public StudentsController(RoomReservationDbContext context) : base(context)
-        { }
+        public StudentsController(RoomReservationDbContext context, PhasesProvider phasesProvider) : base(context)
+        {
+            this.PhasesProvider = phasesProvider;
+        }
+
+        private PhasesProvider PhasesProvider { get; }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -52,11 +57,6 @@ namespace RoomReservation.Web.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(StudentRequestModel model)
         {
-            if (model.CurrentRoomNumber != null)
-            {
-                return this.BadRequest(new { error_message = "You cannot join a room when creating a new student!" });
-            }
-
             var studentWithSameIdExists = await this.Context.Students
                 .AnyAsync(s => s.Id == model.Id);
 
@@ -108,7 +108,7 @@ namespace RoomReservation.Web.Api.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(string id, StudentRequestModel model)
+        public async Task<IActionResult> Put(string id, EditStudentRequestModel model)
         {
             var student = await this.Context.Students
                 .Include(s => s.InvitationsReceived)
@@ -118,6 +118,19 @@ namespace RoomReservation.Web.Api.Controllers
             if (student == null)
             {
                 return this.NotFound();
+            }
+
+            if (student.RegistrationTime != model.RegistrationTime && model.RegistrationTime != null)
+            {
+                if (student.CurrentRoomNumber != null)
+                {
+                    return this.BadRequest(new { error_message = "You cannot assign a registration time to a student who is already in a room!" });
+                }
+
+                if (this.PhasesProvider.GetPhaseForDateTime((DateTime)model.RegistrationTime) != 3)
+                {
+                    return this.BadRequest(new { error_message = "The registration time must be in phase 3!" });
+                }
             }
 
             if (model.CurrentRoomNumber != null && !(bool)model.IsOnCampus)
@@ -207,6 +220,7 @@ namespace RoomReservation.Web.Api.Controllers
             student.IsOnCampus = (bool)model.IsOnCampus;
             student.Comments = model.Comments;
             student.CurrentRoomNumber = model.CurrentRoomNumber;
+            student.RegistrationTime = model.RegistrationTime;
 
             await this.Context.SaveChangesAsync();
             return this.Ok(Mapper.Map<AdminDetailedStudentResponseModel>(student));

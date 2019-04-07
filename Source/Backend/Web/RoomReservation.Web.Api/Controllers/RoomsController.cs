@@ -382,7 +382,8 @@ namespace RoomReservation.Web.Api.Controllers
             && (student.RegistrationTime < DateTime.Now || student.IsRA) // check if the registration time of the student has already come
             && (room.IsMale == null || student.IsMale == room.IsMale) // check if the room is the same sex as the student
             && room.Capacity > room.CurrentResidents.Count // check if the room is not already full
-            && !room.IsReserved; // check if the room is not reserved
+            && !room.IsReserved // check if the room is not reserved
+            && PhasesProvider.CurrentPhase >= 3; // check if the registration phase if reached
         }
     }
 }

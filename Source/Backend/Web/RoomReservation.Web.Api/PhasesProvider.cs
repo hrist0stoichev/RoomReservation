@@ -40,21 +40,26 @@ namespace RoomReservation.Web.Api
         {
             get
             {
-                switch (DateTime.Now)
-                {
-                    case DateTime now when (now >= this.Phase0Start && now < this.Phase1Start):
-                        return 0;
-                    case DateTime now when (now >= this.Phase1Start && now < this.Phase2Start):
-                        return 1;
-                    case DateTime now when (now >= this.Phase2Start && now < this.Phase3Start):
-                        return 2;
-                    case DateTime now when (now >= this.Phase3Start && now < this.Phase3End):
-                        return 3;
-                    case DateTime now when (now >= this.Phase3End && now < this.Phase4End):
-                        return 4;
-                    default:
-                        return -1;
-                }
+                return GetPhaseForDateTime(DateTime.Now);
+            }
+        }
+
+        public int GetPhaseForDateTime(DateTime dateTime)
+        {
+            switch (dateTime)
+            {
+                case DateTime now when (now >= this.Phase0Start && now < this.Phase1Start):
+                    return 0;
+                case DateTime now when (now >= this.Phase1Start && now < this.Phase2Start):
+                    return 1;
+                case DateTime now when (now >= this.Phase2Start && now < this.Phase3Start):
+                    return 2;
+                case DateTime now when (now >= this.Phase3Start && now < this.Phase3End):
+                    return 3;
+                case DateTime now when (now >= this.Phase3End && now < this.Phase4End):
+                    return 4;
+                default:
+                    return -1;
             }
         }
 
