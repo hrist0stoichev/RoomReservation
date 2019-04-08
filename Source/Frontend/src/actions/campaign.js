@@ -37,6 +37,7 @@ export const createCampaign = (dates) => {
       .then(res => res.json())
       .then(res => {
         if (res.status === 400) {
+          console.log(res);
           dispatch(createCampaignLoading(false));
           dispatch(showError('Could not create campaign. Check the dates and try again.'));
         } else {

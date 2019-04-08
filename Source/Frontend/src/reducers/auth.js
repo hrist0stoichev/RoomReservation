@@ -19,6 +19,7 @@ const auth = (state = initialState, action) => {
     case LOGIN_SUCCESS:
       return {
         ...state,
+        ...action.user,
         isAuthenticated: true,
         username: action.user.userName,
         accessToken: action.user.access_token,

@@ -152,6 +152,7 @@ namespace RoomReservation.Web.Api.Controllers
             if (student.CurrentRoomNumber != model.CurrentRoomNumber)
             {
                 var newRoomToJoin = await this.Context.Rooms
+                    .Include(r => r.CurrentResidents)
                     .Include(r => r.Invitations)
                     .Include(r => r.ApartmentRoom)
                         .ThenInclude(ar => ar.Invitations)

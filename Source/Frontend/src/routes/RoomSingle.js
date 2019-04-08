@@ -17,6 +17,7 @@ export class RoomSingle extends Component {
       IsMale: false,
       IsReserved: false,
       Comments: '',
+      Residents: [],
       redirectToRooms: false,
     };
 
@@ -156,7 +157,7 @@ export class RoomSingle extends Component {
                   <ListGroupItemText>
                     <ListGroup>
                       {this.state.Residents && this.state.Residents.length > 0 ?
-                        this.state.Residents.map(resident => <ListGroupItem><span style={{ fontWeight: 'bold' }}>{ resident.Id }</span> {`${resident.FirstName} ${resident.LastName}`}</ListGroupItem>)
+                        this.state.Residents.map(resident => <ListGroupItem><span style={{ fontWeight: 'bold' }}>{ resident.Item1 }</span> {resident.Item2}</ListGroupItem>)
                       : <ListGroupItem>N/A</ListGroupItem>}
                     </ListGroup>
                   </ListGroupItemText>

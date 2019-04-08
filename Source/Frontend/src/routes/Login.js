@@ -13,7 +13,7 @@ const renderLoader = (props) => {
 
 const renderIsAuthenticated = (props) => {
   if (props.isAuthenticated) {
-    return <Redirect to='/students' />;
+    return <Redirect to='/dashboard' />;
   }
   return '';
 }
