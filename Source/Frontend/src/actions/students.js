@@ -31,6 +31,7 @@ export const fetchStudents = () => {
 export const bulkAddStudents = (data) => {
   return (dispatch, getState) => {
     const normalizedData = studentFilter(data);
+    console.log(normalizedData);
     
     dispatch(studentsLoading(true));
     
@@ -40,7 +41,9 @@ export const bulkAddStudents = (data) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getState().auth.accessToken}`,
       },
-      body: JSON.stringify(normalizedData)
+      body: JSON.stringify({
+        students: normalizedData
+      })
     })
       .then(() => {
         dispatch(studentsLoading(false));

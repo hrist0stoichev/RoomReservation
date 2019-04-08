@@ -8,9 +8,10 @@ const filter = (students) => {
       const normKey = key.toUpperCase().replace(/ /g,'');
       if (normKey === 'ID') stObj.Id = student[key];
       if (normKey === 'FIRSTNAME') stObj.FirstName = student[key];
+      if (normKey === 'MIDDLENAME') stObj.FirstName = student[key];
       if (normKey === 'LASTNAME') stObj.LastName = student[key];
-      if (normKey === 'CREDITHOURS') stObj.CreditHours = parseInt(student[key]);
-      if (normKey === 'EMAIL' || normKey === 'E-MAIL') stObj.Email = student[key];
+      if (normKey === 'CREDITHOURS' || normKey === 'EARNEDCRHRS') stObj.CreditHours = parseInt(student[key]);
+      if (normKey === 'EMAIL' || normKey === 'E-MAIL' || normKey === 'EMAILADDR') stObj.Email = student[key];
       if (normKey === 'SEX' || normKey === 'GENDER' || normKey === 'ISMALE') {
         const normValue = student[key].toUpperCase();
         if (normValue === 'MALE' || normValue === 'FEMALE') stObj.IsMale = normValue === 'MALE';

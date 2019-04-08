@@ -85,6 +85,9 @@ class Header extends React.Component {
                 <NavbarToggler onClick={this.toggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
                   <Nav className="ml-auto" navbar>
+                    <NavItem>
+                      <Link to="/dashboard">Dashboard</Link>
+                    </NavItem>
                     <IsAdmin>
                       <NavItem>
                         <Link to="/students">Students</Link>

@@ -18,7 +18,6 @@ class CreateStudent extends React.Component {
       Email: '',
       IsMale: true,
       IsRA: false,
-      IsRoomConfirmed: false,
       IsOnCampus: false,
       Comments: '',
       redirectToStudents: false,
@@ -155,12 +154,6 @@ class CreateStudent extends React.Component {
                     <Label check>
                       <Input type="checkbox" name="IsRA" onClick={this.handleCheck} checked={this.props.IsRA} />{' '}
                       Resident Assistant
-                    </Label>
-                  </FormGroup><br />
-                  <FormGroup check>
-                    <Label check>
-                      <Input type="checkbox" name="IsRoomConfirmed" onClick={this.handleCheck} checked={this.props.IsRoomConfirmed} />{' '}
-                      Confirmed Room
                     </Label>
                   </FormGroup><br />
                   <FormGroup check>

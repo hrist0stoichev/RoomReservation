@@ -6,6 +6,7 @@
     "ag-grid-community": "^20.2.0",
     "ag-grid-react": "^20.2.0",
     "bootstrap": "^4.3.1",
+    "moment": "^2.24.0",
     "node-sass": "^4.11.0",
     "rc-datetime-picker": "^1.6.1",
     "react": "^16.8.4",

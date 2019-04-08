@@ -36,13 +36,13 @@ namespace RoomReservation.Web.Api.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> Token([FromForm]LoginBindingModel model)
         {
-            var ldapUser = this.LdapAuthenticationService.Login(model.UserName.Split('@')[0], model.Password);
-            /* For dev purposes:
+            //var ldapUser = this.LdapAuthenticationService.Login(model.UserName.Split('@')[0], model.Password);
+            //For dev purposes:
               var ldapUser = new LdapUser{
               DisplayName = "Nikola",
               Description = "100164483",
-              Role = "Student"
-            };*/
+              Role = "Admin"
+            };
 
             if (ldapUser == null)
             {

@@ -18,6 +18,7 @@ import CreateStudent from '../containers/CreateStudent';
 import CreateRoom from '../containers/CreateRoom';
 import InvitationsAdmin from '../containers/InvitationsAdmin';
 import CreateInvitationAdmin from '../containers/CreateInvitationAdmin';
+import Dashboard from '../routes/Dashboard';
 
 const authentication = (props, component) => {
   if (props.isAuthenticated) {
@@ -50,6 +51,7 @@ const Router = (props) => (
         <Header />
       </IsAuthenticated>
       <Route path='/' exact component={Login} />
+      <Route path='/dashboard' exact render={() => authentication(props, <Dashboard />)} />
       <Route path='/rooms' exact render={() => authentication(props, <Rooms />)} />
       <Route path='/rooms/single' exact render={() => authentication(props, <RoomsSingle />)} />
       <Route path='/rooms/view' render={() => authentication(props, <RoomsView />)} />
