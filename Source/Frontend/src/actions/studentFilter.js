@@ -8,7 +8,7 @@ const filter = (students) => {
       const normKey = key.toUpperCase().replace(/ /g,'');
       if (normKey === 'ID') stObj.Id = student[key];
       if (normKey === 'FIRSTNAME') stObj.FirstName = student[key];
-      if (normKey === 'MIDDLENAME') stObj.FirstName = student[key];
+      if (normKey === 'MIDDLENAME') stObj.MiddleName = student[key];
       if (normKey === 'LASTNAME') stObj.LastName = student[key];
       if (normKey === 'CREDITHOURS' || normKey === 'EARNEDCRHRS') stObj.CreditHours = parseInt(student[key]);
       if (normKey === 'EMAIL' || normKey === 'E-MAIL' || normKey === 'EMAILADDR') stObj.Email = student[key];
@@ -20,9 +20,7 @@ const filter = (students) => {
       }
     });
 
-    if (stObj.Id && stObj.FirstName && stObj.LastName && stObj.CreditHours && stObj.Email && stObj.IsMale) {
-      output.push(stObj);
-    }
+    output.push(stObj);
   });
 
   return output;
