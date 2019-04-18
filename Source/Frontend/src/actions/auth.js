@@ -2,10 +2,14 @@ import { LOGIN_LOADING, LOGIN_SUCCESS, LOGOUT, TOKEN_VALIDATED } from './actionT
 import { showError } from './alert';
 import makeActionCreator from './makeActionCreator';
 import config from '../config.js';
+import IErrorHandler from '../components/ErrorHandler';
 
 export const login = (user) => {
   return (dispatch) => {
     dispatch(loginLoading(true));
+    const showErrorHandler = (error) => { dispatch(showError(error))};
+    const ErrorHandler = new IErrorHandler('authenticate', showErrorHandler);
+
     fetch(`${config.endpoint}/token`, {
       body: `username=${user.username}&password=${user.password}&role=Admin&phase=1`,
       headers: {
@@ -13,15 +17,22 @@ export const login = (user) => {
       },
       method: "POST"
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) { throw res; }
+        return res.json();
+      })
       .then(res => {
         dispatch(loginLoading(false));
         dispatch(loginSuccess(res));
         localStorage.setItem('token', res.access_token);
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(loginLoading(false));
-        dispatch(showError(error.toString()));
+        ErrorHandler.catchStep(error);
+      })
+      .then((error) => {
+        dispatch(loginLoading(false));
+        ErrorHandler.thenStep(error);
       });
   }
 }

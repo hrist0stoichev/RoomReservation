@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 import './RoomConfirmation.scss';
-
+import IsPhase from '../containers/IsPhase';
 const RoomConfirmation = (props) => {
   if (props.roomConfirmed) {
     return (
@@ -16,7 +16,9 @@ const RoomConfirmation = (props) => {
     return (
       <div id="room-confirmation">
         <p>Your room is not confirmed for the next academic year.</p>
-        <Button color="primary" onClick={props.confirmRoom} style={{ width: '100%' }}>Confirm Room</Button>
+        <IsPhase phase={1} elseMessage="Room confirmation phase is over or has not started yet.">
+          <Button color="primary" onClick={props.confirmRoom} style={{ width: '100%' }}>Confirm Room</Button>
+        </IsPhase>
       </div>
     );
   }

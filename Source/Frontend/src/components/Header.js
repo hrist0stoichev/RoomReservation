@@ -20,13 +20,15 @@ import RoomConfirmation from './RoomConfirmation';
 import Invitations from '../containers/Invitations';
 import IsAdmin from '../containers/IsAdmin';
 import IsStudent from '../containers/IsStudent';
+import { Redirect } from 'react-router-dom';
 
 class Header extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isOpen: false
+      isOpen: false,
+      redirectToEditContract: false,
     };
 
     this.toggle = this.toggle.bind(this);
@@ -37,6 +39,10 @@ class Header extends React.Component {
     this.setState({
       isOpen: !this.state.isOpen
     });
+  }
+
+  editContract = () => {
+    this.setState({ redirectToEditContract: true });
   }
 
   renderLoginDropdown() {
@@ -105,6 +111,9 @@ class Header extends React.Component {
                       </NavItem>
                       <NavItem>
                         <Link to="/invitations">Invitations</Link>
+                      </NavItem>
+                      <NavItem>
+                        <Link to="/contract/edit">Edit Contract</Link>
                       </NavItem>
                     </IsAdmin>
                     {this.renderLoginDropdown()}

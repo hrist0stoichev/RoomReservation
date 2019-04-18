@@ -10,6 +10,7 @@ class LoginForm extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleEnter = this.handleEnter.bind(this);
   }
 
   handleChange(e) {
@@ -23,6 +24,21 @@ class LoginForm extends Component {
         username: this.state.username,
         password: this.state.password
     });
+  }
+
+  handleEnter(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      this.handleLogin();
+    }
+  }
+
+  componentWillMount() {
+    window.addEventListener('keyup', this.handleEnter);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keyup', this.handleEnter);
   }
 
   render() {

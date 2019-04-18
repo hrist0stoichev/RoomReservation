@@ -1,10 +1,10 @@
 import React from 'react';
 
 const IsPhase = (props) => {
-  if (props.phase === props.inputPhase) {
+  if (props.phase == props.inputPhase) {
     return this.props.children;
   } else {
-    return '';
+    return <p style={{ width: '100%', textAlign: 'center' }}>{props.elseMessage}</p>;
   }
 };
 

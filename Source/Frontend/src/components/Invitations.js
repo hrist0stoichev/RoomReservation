@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom';
 import Loader from './Loader';
 import './Invitations.scss';
 import config from '../config';
+import IsPhase from '../containers/IsPhase';
 
 class Invitations extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      invitations: []
+      invitations: [],
+      sentInvitations: []
     }
 
     this.rejectInvitation = this.rejectInvitation.bind(this);
@@ -27,7 +29,10 @@ class Invitations extends React.Component {
     })
       .then(res => res.json())
       .then(res => {
-        this.setState({ invitations: res.ToInvitations });
+        this.setState({ 
+          invitations: res.ToInvitations,
+          sentInvitations: res.FromInvitations
+        });
       })
       .catch(error => {
         console.log(error);
@@ -43,7 +48,10 @@ class Invitations extends React.Component {
     })
       .then(res => res.json())
       .then(res => {
-        this.setState({ invitations: res.ToInvitations });
+        this.setState({ 
+          invitations: res.ToInvitations,
+          sentInvitations: res.FromInvitations
+        });
       })
       .catch(error => {
         console.log(error);
@@ -81,6 +89,7 @@ class Invitations extends React.Component {
   }
 
   render() {
+    const phErr = "You can invite only in phase 2 or 3.";
     if (this.props.isLoading) {
       return <Loader />;
     } else {
@@ -112,9 +121,28 @@ class Invitations extends React.Component {
               </ListGroupItem>
             ))}
           </ListGroup>
-          <Link to="/invitations/create">
-            <Button color="primary" style={{ margin: '1rem 0 0.7rem' }}>Invite New Roommate</Button>
-          </Link>
+          <p style={{ margin: '0.5em 1em' }}>Sent Invitations</p>
+          { this.state.sentInvitations.length > 0 ?
+            <ListGroup flush>
+              {this.state.sentInvitations.map((invitation, index) => (
+                <ListGroupItem tag="div" key={index}>
+                  <Row>
+                    <Col>
+                      <div>To:</div>
+                      <div>{invitation.ToStudentName}</div>
+                    </Col>
+                  </Row>
+                </ListGroupItem>
+              ))}
+            </ListGroup>
+          : 'N/A' }
+          <IsPhase phase={2} elseMessage={phErr}>
+            <IsPhase phase={3} elseMessage={phErr}>
+              <Link to="/invitations/create">
+                <Button color="primary" style={{ margin: '1rem 0 0.7rem' }}>Invite New Roommate</Button>
+              </Link>
+            </IsPhase>
+          </IsPhase>
         </div>
       );
     }

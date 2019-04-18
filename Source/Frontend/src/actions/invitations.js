@@ -27,7 +27,7 @@ export const fetchInvitations = () => {
   }
 };
 
-export const createInvitation = (studentId) => {
+export const createInvitation = (studentId, roomNumber) => {
   return (dispatch, getState) => {
     fetch(`${config.endpoint}/invitations`, {
       method: 'POST',
@@ -36,7 +36,8 @@ export const createInvitation = (studentId) => {
         'Authorization': `Bearer ${getState().auth.accessToken}`,
       },
       body: JSON.stringify({
-        InviteeId: studentId
+        InviteeId: studentId,
+        RoomNumber: roomNumber,
       })
     })
       .catch(error => {

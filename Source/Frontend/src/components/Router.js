@@ -19,6 +19,7 @@ import CreateRoom from '../containers/CreateRoom';
 import InvitationsAdmin from '../containers/InvitationsAdmin';
 import CreateInvitationAdmin from '../containers/CreateInvitationAdmin';
 import Dashboard from '../routes/Dashboard';
+import EditTOS from '../containers/EditTOS';
 
 const authentication = (props, component) => {
   if (props.isAuthenticated) {
@@ -67,6 +68,7 @@ const Router = (props) => (
       <Route path='/apartments/create' exact render={() => authentication(props, <CreateApartment />)} />
       <Route path='/apartments/details' exact render={() => authentication(props, <SingleApartment />)} />
       <Route path='/invitations/' exact render={() => authentication(props, <InvitationsAdmin />)} />
+      <Route path='/contract/edit' exact render={() => authentication(props, <EditTOS />)} />
     </div>
   </HashRouter>
 );

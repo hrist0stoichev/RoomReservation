@@ -3,7 +3,10 @@ import MainLayout from '../components/MainLayout';
 import { Row, Col, Card, CardTitle, CardBody, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import { connect }  from 'react-redux';
 import IsStudent from '../containers/IsStudent';
+import IsAdmin from '../containers/IsAdmin';
 import config from '../config';
+import { Redirect } from 'react-router-dom';
+import TOS from '../containers/TOS';
 
 function mapStateToProps(state) {
   return {
@@ -21,7 +24,8 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      room: {}
+      room: {},
+      adminStats: {}
     };
   }
 
@@ -37,6 +41,18 @@ class Dashboard extends React.Component {
         .then(res => this.setState({ room: res }))
         .catch(error => console.log(error));
     }
+
+    if (this.props.auth.role === 'Admin') {
+      fetch(`${config.endpoint}/users/statistics`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.props.auth.accessToken}`,
+        }
+      })
+        .then(res => res.json())
+        .then(res => this.setState({ adminStats: res }))
+        .catch(error => console.log(error));
+    }
   }
 
   render() {
@@ -46,9 +62,9 @@ class Dashboard extends React.Component {
           title="Dashboard"
           secondaryNav={[]}
         >
+        <IsStudent>
           <Row>
             <Col>
-              <IsStudent>
                 <Card className="mb-4">
                   <CardTitle cla><h5 className="mt-4 ml-4">Your Room</h5></CardTitle>
                   <CardBody>
@@ -78,8 +94,6 @@ class Dashboard extends React.Component {
                     'N/A'}
                   </CardBody>
                 </Card>
-              </IsStudent>
-              <IsStudent>
                 <Card>
                   <CardTitle><h5 className="mt-4 ml-4">Current Campaign</h5></CardTitle>
                   <CardBody>
@@ -91,10 +105,8 @@ class Dashboard extends React.Component {
                     </ListGroup>
                   </CardBody>
                 </Card>
-              </IsStudent>
             </Col>
             <Col>
-              <IsStudent>
                 <Card className="mb-4">
                   <CardTitle><h5 className="mt-4 ml-4">Student Details</h5></CardTitle>
                   <CardBody>
@@ -111,20 +123,103 @@ class Dashboard extends React.Component {
                         <ListGroupItemHeading>Registration Time</ListGroupItemHeading>
                         <ListGroupItemText>{this.props.auth.registration_time || 'N/A'}</ListGroupItemText>
                       </ListGroupItem>
+                    </ListGroup>
+                  </CardBody>
+                </Card>
+            </Col>
+          </Row>
+          <TOS />
+        </IsStudent>
+        <IsAdmin>
+            <Row>
+              <Col>
+                <Card className="mb-4">
+                  <CardTitle><h5 className="mt-4 ml-4">Skaptopara 1</h5></CardTitle>
+                  <CardBody>
+                    <ListGroup>
                       <ListGroupItem>
-                        <ListGroupItemHeading>Current Room</ListGroupItemHeading>
-                        <ListGroupItemText>{this.props.auth.currentRoomNumber || 'N/A'}</ListGroupItemText>
+                        <ListGroupItemHeading>Occupied Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto1OccupiedRooms || 'N/A'}</ListGroupItemText>
                       </ListGroupItem>
                       <ListGroupItem>
-                        <ListGroupItemHeading>Previous Room</ListGroupItemHeading>
-                        <ListGroupItemText>{this.props.auth.previousRoomNumber || 'N/A'}</ListGroupItemText>
+                        <ListGroupItemHeading>Free Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto1FreeRooms || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Total Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto1TotalRooms || 'N/A'}</ListGroupItemText>
                       </ListGroupItem>
                     </ListGroup>
                   </CardBody>
                 </Card>
-              </IsStudent>
+            </Col>
+            <Col>
+                <Card className="mb-4">
+                  <CardTitle><h5 className="mt-4 ml-4">Skaptopara 2</h5></CardTitle>
+                  <CardBody>
+                    <ListGroup>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Occupied Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto2OccupiedRooms || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Free Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto2FreeRooms || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Total Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto2TotalRooms || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                    </ListGroup>
+                  </CardBody>
+                </Card>
+            </Col>
+            <Col>
+                <Card className="mb-4">
+                  <CardTitle><h5 className="mt-4 ml-4">Skaptopara 3</h5></CardTitle>
+                  <CardBody>
+                    <ListGroup>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Occupied Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto3OccupiedRooms || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Free Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto3FreeRooms || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Total Rooms</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.Skapto3TotalRooms || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                    </ListGroup>
+                  </CardBody>
+                </Card>
             </Col>
           </Row>
+          <Row>
+            <Col md="4">
+                <Card className="mb-4">
+                  <CardTitle><h5 className="mt-4 ml-4">Students</h5></CardTitle>
+                  <CardBody>
+                    <ListGroup>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>On Campus</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.StudentsOnCampus || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Off Campus</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.StudentsOffCampus || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                      <ListGroupItem>
+                        <ListGroupItemHeading>Total</ListGroupItemHeading>
+                        <ListGroupItemText>{this.state.adminStats.TotalStudents || 'N/A'}</ListGroupItemText>
+                      </ListGroupItem>
+                    </ListGroup>
+                  </CardBody>
+                </Card>
+            </Col>
+          </Row>
+        </IsAdmin>
         </MainLayout>
       </div>
     );
