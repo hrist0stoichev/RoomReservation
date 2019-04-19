@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,6 +84,42 @@ namespace RoomReservation.Web.Api.Controllers
                     previousRoomNumber = student.PreviousRoomNumber
                 });
             }
+        }
+
+        [HttpGet]
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var studentsQuery = this.Context.Students;
+            var totalStudents = await studentsQuery.CountAsync();
+            var studentsOnCampus = await studentsQuery.Where(s => s.IsOnCampus).CountAsync();
+
+            var rooms = await this.Context.Rooms
+                .AsNoTracking()
+                .Select(r => new { r.Number, ResidentsCount = r.CurrentResidents.Count })
+                .ToListAsync();
+
+            var roomsBySkapto = rooms
+                .GroupBy(r => r.Number[0])
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var response = new 
+            {
+                StudentsOnCampus = studentsOnCampus,
+                StudentsOffCampus = totalStudents - studentsOnCampus,
+                TotalStudents = totalStudents,
+                Skapto1FreeRooms = roomsBySkapto['1']?.Where(r => r.ResidentsCount == 0)?.Count() ?? -1,
+                Skapto1OccupiedRooms = roomsBySkapto['1']?.Where(r => r.ResidentsCount > 0)?.Count() ?? -1,
+                Skapto1TotalRooms = roomsBySkapto['1']?.Count() ?? -1,
+                Skapto2FreeRooms = roomsBySkapto['2']?.Where(r => r.ResidentsCount == 0)?.Count() ?? -1,
+                Skapto2OccupiedRooms = roomsBySkapto['2']?.Where(r => r.ResidentsCount > 0)?.Count() ?? -1,
+                Skapto2TotalRooms = roomsBySkapto['2']?.Count() ?? -1,
+                Skapto3FreeRooms = roomsBySkapto['3']?.Where(r => r.ResidentsCount == 0)?.Count() ?? -1,
+                Skapto3OccupiedRooms = roomsBySkapto['3']?.Where(r => r.ResidentsCount > 0)?.Count() ?? -1,
+                Skapto3TotalRooms = roomsBySkapto['3']?.Count() ?? -1
+            };
+
+            return this.Ok(response);
         }
 
         private string BuildToken(IEnumerable<Claim> claims)
