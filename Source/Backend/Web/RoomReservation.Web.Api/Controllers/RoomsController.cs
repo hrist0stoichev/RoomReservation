@@ -78,7 +78,7 @@ namespace RoomReservation.Web.Api.Controllers
             {
                 var currentUser = await base.GetStudentAsync(this.CurrentUserId);
 
-                if (!IsEligibleForRegistration(currentUser, room))
+                if (!IsEligibleForRegistration(currentUser, room) && currentUser.CurrentRoomNumber != number)
                 {
                     return this.Unauthorized();
                 }
@@ -178,21 +178,17 @@ namespace RoomReservation.Web.Api.Controllers
                 return this.Unauthorized();
             }
 
-            room.CurrentResidents.Add(currentUser);
+            currentUser.RegistrationTime = null;
+            currentUser.CurrentRoomNumber = number;
+            this.Context.Invitations.RemoveRange(currentUser.InvitationsReceived);
 
-            // Check if the apartment is full and delete all invitations
-            if (room.Capacity + (room.ApartmentRoom?.Capacity ?? 0) == room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0))
+            if (room.Capacity == room.CurrentResidents.Count + 1)
             {
                 this.Context.Invitations.RemoveRange(room.Invitations);
-
-                if (room.ApartmentRoom != null)
-                {
-                    this.Context.Invitations.RemoveRange(room.ApartmentRoom.Invitations);
-                }
             }
 
-            // If this is the first resident in the room, mark the room to be the same sex
-            if (room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0) == 1)
+            // If this is the first resident in the apartment, mark the apartment to be the same sex
+            if (room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0) == 0)
             {
                 room.IsMale = currentUser.IsMale;
                 if (room.ApartmentRoom != null)
@@ -201,12 +197,7 @@ namespace RoomReservation.Web.Api.Controllers
                 }
             }
 
-            // Delete all invitations that the user has received in the past
-            this.Context.Invitations.RemoveRange(currentUser.InvitationsReceived);
-            currentUser.RegistrationTime = null;
-
             await this.Context.SaveChangesAsync();
-
             return this.Ok();
         }
 
@@ -366,8 +357,7 @@ namespace RoomReservation.Web.Api.Controllers
 
         private bool IsEligibleForConfirmation(Student student, Room room)
         {
-            return !student.IsRA
-            && student.PreviousRoomNumber != null
+            return student.PreviousRoomNumber != null
             && student.CurrentRoomNumber == null
             && student.IsOnCampus
             && PhasesProvider.CurrentPhase == 1
