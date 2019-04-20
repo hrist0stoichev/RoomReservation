@@ -137,12 +137,13 @@ namespace RoomReservation.Web.Api.Controllers
             }
 
             currentStudent.RegistrationTime = null;
-            room.CurrentResidents.Add(currentStudent);
+            currentStudent.CurrentRoomNumber = currentStudent.PreviousRoomNumber;
 
-            // If this is the first resident in the room, mark the room to be the same sex
-            if (room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0) == 1)
+            // If this is the first resident in the apartment, mark the apartment to be the same sex
+            if (room.CurrentResidents.Count + (room.ApartmentRoom?.CurrentResidents?.Count ?? 0) == 0)
             {
                 room.IsMale = currentStudent.IsMale;
+
                 if (room.ApartmentRoom != null)
                 {
                     room.ApartmentRoom.IsMale = currentStudent.IsMale;
@@ -150,7 +151,6 @@ namespace RoomReservation.Web.Api.Controllers
             }
 
             await this.Context.SaveChangesAsync();
-
             return this.Ok();
         }
 
@@ -360,7 +360,7 @@ namespace RoomReservation.Web.Api.Controllers
             return student.PreviousRoomNumber != null
             && student.CurrentRoomNumber == null
             && student.IsOnCampus
-            && PhasesProvider.CurrentPhase == 1
+            && (PhasesProvider.CurrentPhase == 1 || student.IsRA)
             && !room.IsReserved
             && room.Capacity > room.CurrentResidents.Count;
         }
