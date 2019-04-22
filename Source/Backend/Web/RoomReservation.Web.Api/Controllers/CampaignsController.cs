@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RoomReservation.Data;
+using RoomReservation.Data.Models;
 using RoomReservation.Web.DataTransferModels.Campaign;
 
 namespace RoomReservation.Web.Api.Controllers
@@ -69,11 +70,11 @@ namespace RoomReservation.Web.Api.Controllers
                         .ThenBy(s => s.Id)
                         .ToListAsync();
 
-                    int totalMinutesCount = 0;
+                    var totalMinutesCount = 0D;
 
                     for (DateTime i = (DateTime)model.Phase3Start; i < model.Phase3End; i = i.AddMinutes(1))
                     {
-                        if (i.Hour < 21 && i.Hour >= 9)
+                        if (i.Hour < 22 && i.Hour >= 10)
                         {
                             totalMinutesCount++;
                         }
@@ -82,9 +83,9 @@ namespace RoomReservation.Web.Api.Controllers
                     var minutesPerStudent = totalMinutesCount / students.Count;
                     int studentIndex = 0;
 
-                    for (DateTime i = (DateTime)model.Phase3Start; i < model.Phase3End; i = i.AddMinutes(minutesPerStudent))
+                    for (DateTime i = (DateTime)model.Phase3Start; studentIndex < students.Count; i = i.AddMinutes(minutesPerStudent))
                     {
-                        if (i.Hour < 21 && i.Hour >= 9)
+                        if (i.Hour < 22 && i.Hour >= 10)
                         {
                             students[studentIndex++].RegistrationTime = i;
                         }
