@@ -149,15 +149,12 @@ namespace RoomReservation.Web.Api.Controllers
                 }
             }
 
-            if (student.CurrentRoomNumber != model.CurrentRoomNumber)
+            if (student.CurrentRoomNumber != model.CurrentRoomNumber && model.CurrentRoomNumber != null)
             {
                 var newRoomToJoin = await this.Context.Rooms
                     .Include(r => r.CurrentResidents)
                     .Include(r => r.Invitations)
                     .Include(r => r.ApartmentRoom)
-                        .ThenInclude(ar => ar.Invitations)
-                    .Include(r => r.ApartmentRoom)
-                        .ThenInclude(ar => ar.CurrentResidents)
                     .FirstOrDefaultAsync(r => r.Number == model.CurrentRoomNumber);
 
                 if (newRoomToJoin == null)
@@ -184,31 +181,18 @@ namespace RoomReservation.Web.Api.Controllers
                     return this.BadRequest(new { error_message = "The room you are trying to join is already full!" });
                 }
 
-                if (newRoomToJoin.Capacity + (newRoomToJoin.ApartmentRoom?.Capacity ?? 0) == newRoomToJoin.CurrentResidents.Count + (newRoomToJoin.ApartmentRoom?.CurrentResidents?.Count ?? 0) - 1)
+                if (newRoomToJoin.Capacity == newRoomToJoin.CurrentResidents.Count + 1)
                 {
                     this.Context.Invitations.RemoveRange(newRoomToJoin.Invitations);
-
-                    if (newRoomToJoin.ApartmentRoom != null)
-                    {
-                        this.Context.Invitations.RemoveRange(newRoomToJoin.ApartmentRoom.Invitations);
-                    }
                 }
 
                 this.Context.Invitations.RemoveRange(student.InvitationsReceived);
                 this.Context.Invitations.RemoveRange(student.InvitationsSent);
             }
 
-            if (student.IsMale != model.IsMale && student.CurrentRoomNumber == model.CurrentRoomNumber)
+            if (student.IsMale != model.IsMale && student.CurrentRoomNumber == model.CurrentRoomNumber && student.CurrentRoomNumber != null)
             {
-                var currentRoomIsMale = await this.Context.Rooms
-                    .Where(r => r.Number == student.CurrentRoomNumber)
-                    .Select(r => r.IsMale)
-                    .FirstOrDefaultAsync();
-
-                if (currentRoomIsMale != model.IsMale)
-                {
-                    return this.BadRequest(new { error_message = "The student and room sexes cannot be different!" });
-                }
+                return this.BadRequest(new { error_message = "The student and room sexes cannot be different!" });
             }
 
             student.Id = model.Id;
